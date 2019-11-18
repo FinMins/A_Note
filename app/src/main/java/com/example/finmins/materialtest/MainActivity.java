@@ -23,11 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
     private DrawerLayout mDrawerLayout;
-   private SwipeRefreshLayout swipeRefreshLayout ;
+    private SwipeRefreshLayout swipeRefreshLayout ;
     private List<ShiJian> shiJianList = new ArrayList<ShiJian>();
-//将数据库的数据读取到listView中
+    private FloatingActionButton fab;
+    private ShiJianAdapter shiJianAdapter;
+    private ListView listView;
+
+
+    //将数据库的数据读取到listView中
     private void initShijian(){
       List<ShiJian> shijians = DataSupport.findAll(ShiJian.class);
         for(ShiJian shijian:shijians){
@@ -36,33 +40,33 @@ public class MainActivity extends AppCompatActivity {
            }
     }
 
-
-
-
+    //下拉刷新事件
+    public void Refresh(){
+        shiJianList.clear();
+        shiJianAdapter = new ShiJianAdapter(MainActivity.this,R.layout.list_main,shiJianList);
+        listView =(ListView)findViewById(R.id.list_view);
+        listView.setAdapter(shiJianAdapter);
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initShijian();
+
 
         //下拉刷新
         swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                shiJianList.clear();     //清楚listView内容
-                shiJianList.notify(); ;
-                initShijian();     //重新加载listView内容
+              Refresh();
+                initShijian(); //重新加载listView
                 swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+    }});
 
-
-        //添加事件
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.asd);
+        //点击悬浮按钮添加事件进入InsertActivity
+        fab = (FloatingActionButton)findViewById(R.id.asd);
         fab.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
              Intent intent = new Intent(MainActivity.this,InsertActivity.class);
@@ -70,10 +74,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ShiJianAdapter shiJianAdapter = new ShiJianAdapter(MainActivity.this,R.layout.list_main,shiJianList);
-        ListView listView =(ListView)findViewById(R.id.list_view);
-        listView.setAdapter(shiJianAdapter);
-
+        Refresh();
+        initShijian();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //添加拉框菜单
@@ -111,14 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.backup:
                     Toast.makeText(this,"You clicked Search",Toast.LENGTH_SHORT).show();
                     break;
-                /***
-                case R.id.delete:
-                    Toast.makeText(this,"You clicked Delete",Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.settings:
-                    Toast.makeText(this,"You clicked setting",Toast.LENGTH_SHORT).show();
-                    break;
-                 **/
                  case android.R.id.home:
                      mDrawerLayout.openDrawer(GravityCompat.START);
                      break;

@@ -41,9 +41,9 @@ public class ShiJianAdapter extends ArrayAdapter<ShiJian> {
         TextView time = (TextView)view.findViewById(R.id.end_time);
 
         biaoti.setText(shijian.getBiaoti());
-        year.setText(String.valueOf(shijian.getYear()) );
-        month.setText(String.valueOf(shijian.getMonth()));
-        day.setText(String.valueOf(shijian.getDay()));
+        year.setText(String.valueOf(shijian.getYear())+"/" );
+        month.setText(String.valueOf(shijian.getMonth())+"/");
+        day.setText(String.valueOf(shijian.getDay())+"/");
         time.setText(shijian.getTime());
 
         return view;

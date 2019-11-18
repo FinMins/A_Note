@@ -23,6 +23,7 @@ public class ShiJian extends DataSupport {
         this.month=month;
         this.biaoti=biaoti;
         this.biaoti=biaoti;
+        this.time=time;
     }
     public ShiJian(){};
     //设置ID
