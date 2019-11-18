@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+   <TimePicker
+       android:id="@+id/timepicker"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:timePickerMode="clock">
+
+   </TimePicker>
+    <Button
+        android:id="@+id/alarm_shijiandian"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设置时间点闹钟"
+        />
+    <Button
+        android:id="@+id/alarm_shijianduan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设置时间段闹钟"/>
+    <EditText
+        android:id="@+id/alarm_biaoti"
+        android:background="#fff"
+        android:gravity="top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="请输入事件标题"/>
+
+
+</LinearLayout>

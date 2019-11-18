@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.finmins.materialtest.LuYinActivity" >
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="start" />
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/start"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="stop" />
+    <Button
+        android:id="@+id/paly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/stop"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="paly" />
+    <Button
+        android:id="@+id/pause_paly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/paly"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="pause_paly" />
+    <Button
+        android:id="@+id/stop_paly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pause_paly"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="stop_paly" />
+</RelativeLayout>
