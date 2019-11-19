@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.daimajia.swipe.SwipeLayout;
+
 import org.litepal.crud.DataSupport;
 
 import java.lang.reflect.Method;
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private ShiJianAdapter shiJianAdapter;
     private ListView listView;
-
+    private SwipeLayout swip ;
 
     //将数据库的数据读取到listView中
     private void initShijian(){
@@ -51,52 +53,55 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+                super.onCreate(savedInstanceState);
+                setContentView(R.layout.activity_main);
 
 
-        //下拉刷新
-        swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-              Refresh();
-                initShijian(); //重新加载listView
-                swipeRefreshLayout.setRefreshing(false);
-    }});
 
-        //点击悬浮按钮添加事件进入InsertActivity
-        fab = (FloatingActionButton)findViewById(R.id.asd);
-        fab.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-             Intent intent = new Intent(MainActivity.this,InsertActivity.class);
-            startActivity(intent);
-            }
-        });
 
-        Refresh();
-        initShijian();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        //添加拉框菜单
-         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
 
-        NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
-        navView.setItemIconTintList(null);
+                //下拉刷新
+                swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipeRefreshLayout);
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                      Refresh();
+                        initShijian(); //重新加载listView
+                        swipeRefreshLayout.setRefreshing(false);
+            }});
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar !=null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.mipmap.wode);;
-        }
+                //点击悬浮按钮添加事件进入InsertActivity
+                fab = (FloatingActionButton)findViewById(R.id.asd);
+                fab.setOnClickListener(new View.OnClickListener(){
+                    public void onClick(View v){
+                     Intent intent = new Intent(MainActivity.this,InsertActivity.class);
+                    startActivity(intent);
+                    }
+                });
 
-        navView.setCheckedItem(R.id.nav_call);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
-            public boolean onNavigationItemSelected(MenuItem item){
-            mDrawerLayout.closeDrawers();
-            return true;
-        }
-        });
+                Refresh();
+                initShijian();
+                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+                setSupportActionBar(toolbar);
+                //添加拉框菜单
+                 mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
+
+                NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
+                navView.setItemIconTintList(null);
+
+                ActionBar actionBar = getSupportActionBar();
+                if (actionBar !=null){
+                    actionBar.setDisplayHomeAsUpEnabled(true);
+                    actionBar.setHomeAsUpIndicator(R.mipmap.wode);;
+                }
+
+                navView.setCheckedItem(R.id.nav_call);
+                navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
+                    public boolean onNavigationItemSelected(MenuItem item){
+                    mDrawerLayout.closeDrawers();
+                    return true;
+                }
+                });
 
         }
 
