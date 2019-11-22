@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ShiJianAdapter shiJianAdapter;
     private ListView listView;
     private TextView swipe ;
-
+    private String TAV="MainActivity.this";
 
 
 
@@ -55,7 +55,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
            }
     }
 
-
+    protected void onResume() {
+        super.onResume();
+        Refresh();
+        initShijian();
+    }
 
 
     //下拉刷新事件
@@ -69,19 +73,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //list点击事件
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //通过view获取其内部的组件，进而进行操作
-        String text = (String) ((TextView)view.findViewById(R.id.swipe_delete)).getText();
-        //大多数情况下，position和id相同，并且都从0开始
-        String showText = "点击第" + position+1 + "项，文本内容为：" + text + "，ID为：" + id;
-        Toast.makeText(this, showText, Toast.LENGTH_LONG).show();
+        int ids =(int)id;
+        Intent intent= new Intent(MainActivity.this,ChaKanActivity.class);
+        intent.putExtra("positions",position);
+        intent.putExtra("ids",ids+1);
+        startActivity(intent);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
-
-
-
 
                 //下拉刷新
                 swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipeRefreshLayout);
@@ -105,9 +107,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
                 Refresh();
-
-
-
 
 
         initShijian();

@@ -4,13 +4,13 @@
     package="com.example.finmins.materialtest">
 
     <application
-        tools:replace="android:label"
         android:name="org.litepal.LitePalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/app"
         android:label="A_Note"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:label">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,11 +22,20 @@
             android:name=".InsertActivity"
             android:label="请输入你要记录的事情"
             android:theme="@style/AppTheme" />
-        <activity android:name=".PhotoActivity" />
-
-
         <activity android:name=".AlarmActivity" />
-        <activity android:name=".Alarm"></activity>
+        <activity android:name=".Alarm" />
+
+        <receiver
+            android:name=".AlarmTest"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.broadcast.MY_BROADCAST" />
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ChaKanActivity"></activity>
     </application>
 
 </manifest>

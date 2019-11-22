@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.daimajia.swipe.SimpleSwipeListener;
+import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.ArraySwipeAdapter;
 
 import java.util.List;
@@ -20,7 +23,7 @@ import java.util.List;
 public class ShiJianAdapter extends ArrayAdapter<ShiJian> {
 
     class ViewHolder{
-      ImageView imageView;
+        ImageView imageView;
         TextView year;
         TextView month;
         TextView day;
@@ -51,12 +54,12 @@ public class ShiJianAdapter extends ArrayAdapter<ShiJian> {
         ViewHolder viewHolder;
         if (convertView == null) {
             view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-         viewHolder =new ViewHolder();
+            viewHolder =new ViewHolder();
             viewHolder.imageView = (ImageView) view.findViewById(R.id.image);
 
-           viewHolder. biaoti = (TextView) view.findViewById(R.id.shijianName);
+            viewHolder. biaoti = (TextView) view.findViewById(R.id.shijianName);
 
-           viewHolder.year = (TextView) view.findViewById(R.id.year);
+            viewHolder.year = (TextView) view.findViewById(R.id.year);
 
             viewHolder.month = (TextView) view.findViewById(R.id.mouth);
 
@@ -69,11 +72,10 @@ public class ShiJianAdapter extends ArrayAdapter<ShiJian> {
             view = convertView;
             viewHolder = (ViewHolder)view.getTag(); //重新获取viewHolder
         }
-      viewHolder.biaoti.setText(shijian.getBiaoti());
+        viewHolder.biaoti.setText(shijian.getBiaoti());
         viewHolder.  year.setText(String.valueOf(shijian.getYear()) + "/");
         viewHolder. month.setText(String.valueOf(shijian.getMonth()) + "/");
         viewHolder. day.setText(String.valueOf(shijian.getDay()) + "/");
         viewHolder. time.setText(shijian.getTime());
 
         return view;}}
-

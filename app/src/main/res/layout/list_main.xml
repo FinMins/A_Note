@@ -20,6 +20,7 @@
             android:background="@android:color/holo_red_dark"
             android:gravity="center"
             android:text="删除"
+            android:clickable="true"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
     </LinearLayout>

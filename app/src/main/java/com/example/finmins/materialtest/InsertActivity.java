@@ -76,21 +76,6 @@ public class InsertActivity extends AppCompatActivity {
              {
                  Toast.makeText(InsertActivity.this,"标题不能为空！",Toast.LENGTH_SHORT).show();
              } else {
-                 /**使用sqlite添加数据
-                     SQLiteDatabase db = dbHelper.getWritableDatabase();
-                     ContentValues values = new ContentValues();
-                     //开始组装第一条数据
-                     values.put("biaoti", biaoti.getText().toString());
-                    values.put("neirong", neirong.getText().toString());
-                    values.put("year",Calendar.getInstance().get(Calendar.YEAR));
-                    values.put("month",Calendar.getInstance().get(Calendar.MONTH)+1);
-                    values.put("day",Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-                     values.put("time",
-                                  String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) +"时"+
-                                  String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) )+"分"+
-                                  String.valueOf(Calendar.getInstance().get(Calendar.SECOND))+"秒");
-                     db.insert("ShiJian",null,values);
-                  **/
                ShiJian shijian =new ShiJian();
                 shijian.setBiaoti(biaoti.getText().toString());
                 shijian.setNeirong(neirong.getText().toString());
@@ -103,6 +88,7 @@ public class InsertActivity extends AppCompatActivity {
                   shijian.setId(1);
                  shijian.save();
                  Toast.makeText(InsertActivity.this,"事件添加成功！",Toast.LENGTH_SHORT).show();
+                 finish();
              }
             }
         });
