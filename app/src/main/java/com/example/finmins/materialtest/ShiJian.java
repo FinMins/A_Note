@@ -25,7 +25,9 @@ public class ShiJian extends DataSupport {
         this.biaoti=biaoti;
         this.time=time;
     }
-    public ShiJian(){};
+    public ShiJian(){
+
+    };
     //设置ID
     public void setId(int id){
 

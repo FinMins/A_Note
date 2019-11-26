@@ -2,11 +2,12 @@
 
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipe"
+    android:id="@+id/swipeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:drag_edge="right">
     <LinearLayout
+        android:id="@+id/delete"
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -30,7 +31,7 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/list"
+    android:id="@+id/surfaceView"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="5dp">
@@ -70,7 +71,7 @@
                    />
                 <TextView
                     android:gravity="center"
-                    android:id="@+id/mouth"
+                    android:id="@+id/month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />

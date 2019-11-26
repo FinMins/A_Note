@@ -31,11 +31,20 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.example.broadcast.MY_BROADCAST" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ChaKanActivity"></activity>
+        <activity android:name=".ChaKanActivity" />
+
+        <service
+            android:name=".LongRunningServiece"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".MyIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

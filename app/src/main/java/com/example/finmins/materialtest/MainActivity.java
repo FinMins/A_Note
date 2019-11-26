@@ -11,6 +11,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -26,20 +28,22 @@ import java.util.Date;
 
 
 import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.util.Attributes;
 
+import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity  {
     private DrawerLayout mDrawerLayout;
     private SwipeRefreshLayout swipeRefreshLayout ;
     private List<ShiJian> shiJianList = new ArrayList<ShiJian>();
     private FloatingActionButton fab;
     private ShiJianAdapter shiJianAdapter;
-    private ListView listView;
+    private RecyclerView recyclerView;
     private TextView swipe ;
     private String TAV="MainActivity.this";
 
@@ -48,10 +52,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //将数据库的数据读取到listView中
     private void initShijian(){
-      List<ShiJian> shijians = DataSupport.findAll(ShiJian.class);
+      List<ShiJian>  shijians = DataSupport.findAll(ShiJian.class);
         for(ShiJian shijian:shijians){
-            ShiJian shijian_list=new ShiJian(shijian.getBiaoti(),shijian.getTime(),shijian.getYear(),shijian.getMonth(),shijian.getDay());
-            shiJianList.add(shijian_list);
+            shiJianList.add(shijian);
            }
     }
 
@@ -59,26 +62,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onResume();
         Refresh();
         initShijian();
+        initEvents();
     }
+
+
+    //adapter点击事件
+        public void initEvents(){
+        shiJianAdapter.setOnItemClickLitener(new ShiJianAdapter.OnItemClickLitener(){
+            @Override
+            public void onItemClick(View view, int position,int id) {
+              Intent intent = new Intent(MainActivity.this,ChaKanActivity.class);
+                intent.putExtra("ids",id);
+                startActivity(intent);
+            }
+            @Override
+            public void onDeleteClick(int position,int id) {
+                DataSupport.delete(ShiJian.class,id);
+                shiJianList.remove(position);
+                shiJianAdapter.notifyItemRemoved(position);
+              Toast.makeText(MainActivity.this,"事件删除成功",Toast.LENGTH_SHORT).show();
+            }
+        });
+        }
+
+
 
 
     //下拉刷新事件
     public void Refresh(){
         shiJianList.clear();
-        shiJianAdapter = new ShiJianAdapter(MainActivity.this,R.layout.list_main,shiJianList);
-        listView =(ListView)findViewById(R.id.list_view);
-        listView.setAdapter(shiJianAdapter);
-        listView.setOnItemClickListener(this);
+        recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        if(shiJianAdapter ==null) {
+            shiJianAdapter = new ShiJianAdapter(this, shiJianList);
+            shiJianAdapter.setMode(Attributes.Mode.Single);
+            recyclerView.setAdapter(shiJianAdapter);
+            recyclerView.setSelected(true);
+        }else {
+            shiJianAdapter.notifyDataSetChanged();
+        }
     }
 
-    //list点击事件
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        int ids =(int)id;
-        Intent intent= new Intent(MainActivity.this,ChaKanActivity.class);
-        intent.putExtra("positions",position);
-        intent.putExtra("ids",ids+1);
-        startActivity(intent);
-    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         swipeRefreshLayout.setRefreshing(false);
             }});
 
+
                 //点击悬浮按钮添加事件进入InsertActivity
                 fab = (FloatingActionButton)findViewById(R.id.asd);
                 fab.setOnClickListener(new View.OnClickListener(){
@@ -107,9 +135,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
                 Refresh();
+              initShijian();
+              initEvents();
 
-
-        initShijian();
                 Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
                 //添加拉框菜单

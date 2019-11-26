@@ -7,14 +7,14 @@ import android.widget.Toast;
 
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
-    public static  final  String CREATE_SHIJIAN="create table ShiJian ("
+    public static  final  String CREATE_SHIJIAN=" create table ShiJian ("
             + " id integer primary key autoincrement,"
             + " biaoti text, "
             + " neirong text, "
-            + " year integer,"
-            + " month integer,"
-            + " day integer,"
-            + " time text)";
+            + " year integer, "
+            + " month integer, "
+            + " day integer, "
+            + " time text) ";
     private Context mContext;
 
     public  MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,int version){
