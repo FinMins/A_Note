@@ -43,9 +43,6 @@ public class InsertActivity extends AppCompatActivity {
         initSet();   //初始化事件
 
         dbHelper=new MyDatabaseHelper(this,"ShiJian.db",null,1);  //创建事件数据库
-
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.insert_toolbar);
         setSupportActionBar(toolbar);
 
@@ -85,7 +82,7 @@ public class InsertActivity extends AppCompatActivity {
                  shijian.setTime( String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) +"时"+
                          String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) )+"分"+
                          String.valueOf(Calendar.getInstance().get(Calendar.SECOND))+"秒");
-                  shijian.setId(1);
+                 shijian.setImgId(0);
                  shijian.save();
                  Toast.makeText(InsertActivity.this,"事件添加成功！",Toast.LENGTH_SHORT).show();
                  finish();

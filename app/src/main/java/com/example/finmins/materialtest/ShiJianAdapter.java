@@ -2,6 +2,7 @@ package com.example.finmins.materialtest;
 import android.content.Context;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 
@@ -49,7 +51,6 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
 
 
     static class  ViewHolder extends RecyclerView.ViewHolder {
-        View shijianView;
         ImageView imageView;
         TextView year;
         TextView month;
@@ -60,6 +61,7 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
         TextView delete;
         LinearLayout deleteLayout;
         LinearLayout listItemLayout;
+        TextView finish;
         public  ViewHolder(View view) {
             super(view);
 
@@ -74,7 +76,7 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
             biaoti = (TextView) view.findViewById(R.id.shijianName);
 
             swipeLayout = (SwipeLayout)view.findViewById(R.id.swipeLayout);
-
+             finish = (TextView)view.findViewById(R.id.swipe_finish);
             delete = (TextView)view.findViewById(R.id.swipe_delete);
 
         }
@@ -83,11 +85,12 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
 
     public void onBindViewHolder(ViewHolder viewHolder,  int position) {
           if(viewHolder instanceof  ViewHolder) {
-              ShiJian shijian = mShiJianList.get(position);
+              final ShiJian shijian = mShiJianList.get(position);
               final int id =shijian.getId();
               final ViewHolder itemViewHold = ((ViewHolder) viewHolder);
               itemViewHold.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
               if (mOnItemClickLitener != null) {
+
                   itemViewHold.swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
                       @Override
                       public void onClick(View v) {
@@ -105,10 +108,25 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
                           mOnItemClickLitener.onDeleteClick(position,id);
                       }
                   });
+                  //
+                  itemViewHold.finish.setOnClickListener(new View.OnClickListener(){
+                      @Override
+                      public void onClick(View v) {
+                          itemViewHold.swipeLayout.close();
+                          int position = itemViewHold.getLayoutPosition();
+                          mOnItemClickLitener.onSetImgId( position,id,shijian);
 
+                      }
+                  });
               }
-
-              //  holder.imageView.setImageResource(   );    获取圈圈或者勾勾
+              mItemManger.bindView(viewHolder.itemView, position);//实现只展现一条列表项的侧滑区域
+             if(shijian.get_imgId()==0) {
+                 itemViewHold.imageView.setImageResource(R.mipmap.yuanquan);
+                 itemViewHold.finish.setText("完成");
+             }else{
+                 itemViewHold.imageView.setImageResource(R.mipmap.zhengque);
+                 itemViewHold. finish.setText("未完成");
+             }
               itemViewHold.biaoti.setText(shijian.getBiaoti());
               itemViewHold.year.setText(String.valueOf(shijian.getYear()) + "/");
               itemViewHold.month.setText(String.valueOf(shijian.getMonth()) + "/");
@@ -117,10 +135,13 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
           }
 
     }
+
+
+
     public interface OnItemClickLitener
     {
         void onItemClick(View view, int position,int id);
-      //  void onItemLongClick(View view, int position);
+       void onSetImgId(int position,int id,ShiJian shijian);
         /**置顶*/
       //  void onTopClick(int position);
         /**删除*/

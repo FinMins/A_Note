@@ -12,11 +12,6 @@
         android:theme="@style/AppTheme"
         tools:replace="android:label">
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".InsertActivity"
@@ -28,13 +23,7 @@
         <receiver
             android:name=".AlarmTest"
             android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.example.broadcast.MY_BROADCAST" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
+            android:exported="true"></receiver>
 
         <activity android:name=".ChaKanActivity" />
 
@@ -44,7 +33,15 @@
             android:exported="true" />
         <service
             android:name=".MyIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

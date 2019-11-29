@@ -7,6 +7,7 @@ import org.litepal.crud.DataSupport;
  */
 
 public class ShiJian extends DataSupport {
+    private int imgId;
     private String biaoti;
     private String neirong;
     private String time;
@@ -25,9 +26,16 @@ public class ShiJian extends DataSupport {
         this.biaoti=biaoti;
         this.time=time;
     }
+
     public ShiJian(){
 
     };
+
+    public void setImgId(int i){
+        this.imgId=i;
+
+    }
+
     //设置ID
     public void setId(int id){
 
@@ -96,4 +104,9 @@ public class ShiJian extends DataSupport {
     //获取时间
     public String getTime()
     {return time;}
+
+    public int get_imgId(){
+        return this.imgId;
+    }
+
 }

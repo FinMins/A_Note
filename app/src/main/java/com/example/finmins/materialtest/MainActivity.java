@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,13 +62,14 @@ public class MainActivity extends AppCompatActivity  {
     protected void onResume() {
         super.onResume();
         Refresh();
-        initShijian();
+
         initEvents();
     }
 
 
     //adapter点击事件
         public void initEvents(){
+
         shiJianAdapter.setOnItemClickLitener(new ShiJianAdapter.OnItemClickLitener(){
             @Override
             public void onItemClick(View view, int position,int id) {
@@ -82,6 +84,26 @@ public class MainActivity extends AppCompatActivity  {
                 shiJianAdapter.notifyItemRemoved(position);
               Toast.makeText(MainActivity.this,"事件删除成功",Toast.LENGTH_SHORT).show();
             }
+
+            public void onSetImgId(int position,int id,ShiJian shijian ){
+                View view = recyclerView.getLayoutManager().findViewByPosition(position);
+                ImageView imageView=(ImageView)view.findViewById(R.id.image);
+                TextView  finish =(TextView)view.findViewById(R.id.swipe_finish);
+                ShiJian shijian1 =new ShiJian();
+                if(shijian.get_imgId()==1){
+                    shijian1.setToDefault("imgId");
+                    shijian1.update(id);
+                    imageView.setImageResource(R.mipmap.yuanquan);
+                    finish.setText("完成");
+                     } else{
+                    shijian1.setImgId(1);
+                    shijian1.update(id);
+                    imageView.setImageResource(R.mipmap.zhengque);
+                    finish.setText("未完成");
+                        }
+                shiJianAdapter.notifyDataSetChanged();
+                Refresh();
+                }
         });
         }
 
@@ -94,19 +116,17 @@ public class MainActivity extends AppCompatActivity  {
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        if(shiJianAdapter ==null) {
+      //if(shiJianAdapter ==null) {
             shiJianAdapter = new ShiJianAdapter(this, shiJianList);
-            shiJianAdapter.setMode(Attributes.Mode.Single);
-            recyclerView.setAdapter(shiJianAdapter);
-            recyclerView.setSelected(true);
-        }else {
-            shiJianAdapter.notifyDataSetChanged();
-        }
+          shiJianAdapter.setMode(Attributes.Mode.Single);
+         recyclerView.setAdapter(shiJianAdapter);
+          recyclerView.setSelected(true);
+       //}else {
+          initShijian();
+        shiJianAdapter.notifyDataSetChanged();
+    //  }
+        initEvents();
     }
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -118,7 +138,6 @@ public class MainActivity extends AppCompatActivity  {
                     @Override
                     public void onRefresh() {
                       Refresh();
-                        initShijian(); //重新加载listView
                         swipeRefreshLayout.setRefreshing(false);
             }});
 
@@ -131,13 +150,7 @@ public class MainActivity extends AppCompatActivity  {
                     startActivity(intent);
                     }
                 });
-
-
-
                 Refresh();
-              initShijian();
-              initEvents();
-
                 Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
                 //添加拉框菜单
