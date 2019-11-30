@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.finmins.materialtest">
-
+   <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application
         android:name="org.litepal.LitePalApplication"
         android:allowBackup="true"
@@ -11,19 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".InsertActivity"
             android:label="请输入你要记录的事情"
             android:theme="@style/AppTheme" />
-        <activity android:name=".AlarmActivity" />
+        <activity android:name=".AlarmActivity"
+            android:theme="@style/Theme.AppCompat"/>
         <activity android:name=".Alarm" />
 
         <receiver
             android:name=".AlarmTest"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
 
         <activity android:name=".ChaKanActivity" />
 
@@ -38,10 +39,20 @@
         <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.FinMins.broadcasttest.MY_BROADCAST"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

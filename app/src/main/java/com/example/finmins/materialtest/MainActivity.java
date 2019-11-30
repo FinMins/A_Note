@@ -1,7 +1,7 @@
 package com.example.finmins.materialtest;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -9,23 +9,22 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
-import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
+
 import android.widget.ImageView;
-import android.widget.ListView;
+
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.Date;
+import android.app.Dialog;
 
 
 import com.daimajia.swipe.SwipeLayout;
@@ -79,10 +78,29 @@ public class MainActivity extends AppCompatActivity  {
             }
             @Override
             public void onDeleteClick(int position,int id) {
-                DataSupport.delete(ShiJian.class,id);
-                shiJianList.remove(position);
-                shiJianAdapter.notifyItemRemoved(position);
-              Toast.makeText(MainActivity.this,"事件删除成功",Toast.LENGTH_SHORT).show();
+                final int position_item=position;
+                final int id_item=id;
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                dialog.setTitle("警告");
+                dialog.setMessage("确认删除？");
+                dialog.setCancelable(false);
+                dialog.setPositiveButton("确认",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DataSupport.delete(ShiJian.class,id_item);
+                        shiJianList.remove(position_item);
+                        shiJianAdapter.notifyItemRemoved(position_item);
+                        Toast.makeText(MainActivity.this,"事件删除成功",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.setNegativeButton("取消",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+               dialog.show();
+
+
             }
 
             public void onSetImgId(int position,int id,ShiJian shijian ){
@@ -101,7 +119,7 @@ public class MainActivity extends AppCompatActivity  {
                     imageView.setImageResource(R.mipmap.zhengque);
                     finish.setText("未完成");
                         }
-                shiJianAdapter.notifyDataSetChanged();
+              //  shiJianAdapter.notifyDataSetChanged();
                 Refresh();
                 }
         });
@@ -164,7 +182,6 @@ public class MainActivity extends AppCompatActivity  {
                     actionBar.setDisplayHomeAsUpEnabled(true);
                     actionBar.setHomeAsUpIndicator(R.mipmap.wode);;
                 }
-
                 navView.setCheckedItem(R.id.nav_call);
                 navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
                     public boolean onNavigationItemSelected(MenuItem item){
