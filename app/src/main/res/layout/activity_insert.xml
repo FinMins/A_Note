@@ -23,24 +23,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-
         <ImageButton
             android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/dui"
+            android:src="@mipmap/dui"
+            android:scaleType="fitXY"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@color/colorPrimary"
+            />
+        <ImageButton
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="16dp"
+            android:id="@+id/fanhui"
+            android:src="@mipmap/fanhui"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="17dp"
+            android:background="@color/colorPrimary"
+            />
+        <ImageButton
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/photo"
+            android:src="@mipmap/xiangji"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            />
+        <ImageButton
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:id="@+id/naozhong"
             android:src="@mipmap/shizhong"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@color/colorPrimary"/>
 
         <ImageButton
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="9dp"
             android:layout_marginTop="10dp"
             android:id="@+id/yuyin"
             android:src="@mipmap/yuyin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@color/colorPrimary"
             />
 
@@ -62,22 +92,39 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         >
-    <EditText
-        android:gravity="top"
-        android:id="@+id/editText_neirong"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/shape_corner"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:hint="请输入事件内容    （ps:上面两个图标是可以点的，只是还没写活动）"
-        android:paddingLeft="10dip"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/shape_corner"
+            >
+                <EditText
 
+                    android:maxLines="4"
+                    android:gravity="top"
+                    android:id="@+id/editText_neirong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_corner"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="请输入事件内容    （ps:上面两个图标是可以点的，只是还没写活动）                                                               "
+                    android:paddingLeft="10dip"
+                    />
+                       <ImageView
+                           android:id="@+id/myphoto"
+                           android:layout_gravity="center_horizontal"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_marginBottom="10dp"
+                          />
+        </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/tianjia"
@@ -85,9 +132,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:src="@drawable/jiahao"
-            android:color="@color/colorPrimary"
+            android:color="#5fc9ff"
             android:layout_marginBottom="50px"
             android:paddingLeft="50px"/>
+
 
 
 </LinearLayout>

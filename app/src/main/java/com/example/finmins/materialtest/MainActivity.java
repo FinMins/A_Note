@@ -20,8 +20,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Dialog;
@@ -36,7 +38,8 @@ import org.litepal.crud.DataSupport;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
+import android.util.DisplayMetrics;
+import java.io.File;
 public class MainActivity extends AppCompatActivity  {
     private DrawerLayout mDrawerLayout;
     private SwipeRefreshLayout swipeRefreshLayout ;
@@ -46,8 +49,7 @@ public class MainActivity extends AppCompatActivity  {
     private RecyclerView recyclerView;
     private TextView swipe ;
     private String TAV="MainActivity.this";
-
-
+    private ImageView image;
 
 
     //将数据库的数据读取到listView中
@@ -158,8 +160,6 @@ public class MainActivity extends AppCompatActivity  {
                       Refresh();
                         swipeRefreshLayout.setRefreshing(false);
             }});
-
-
                 //点击悬浮按钮添加事件进入InsertActivity
                 fab = (FloatingActionButton)findViewById(R.id.asd);
                 fab.setOnClickListener(new View.OnClickListener(){
@@ -180,7 +180,8 @@ public class MainActivity extends AppCompatActivity  {
                 ActionBar actionBar = getSupportActionBar();
                 if (actionBar !=null){
                     actionBar.setDisplayHomeAsUpEnabled(true);
-                    actionBar.setHomeAsUpIndicator(R.mipmap.wode);;
+                image = (ImageView)findViewById(R.id.wode);
+                    actionBar.setHomeAsUpIndicator(R.mipmap.wode);
                 }
                 navView.setCheckedItem(R.id.nav_call);
                 navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
