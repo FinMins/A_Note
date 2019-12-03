@@ -118,7 +118,8 @@ public class ShiJian extends DataSupport {
 
     //获取图片
     public Bitmap getPhoto(){
-        return BitmapFactory.decodeByteArray(photo,0,photo.length);
+        if(photo!=null)return BitmapFactory.decodeByteArray(photo,0,photo.length);
+        else  return null;
     }
 
 }

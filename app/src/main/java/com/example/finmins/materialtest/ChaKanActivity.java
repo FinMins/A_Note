@@ -92,7 +92,7 @@ public class ChaKanActivity extends AppCompatActivity {
         biaoti_tem.setText(shijian.getBiaoti());
         neirong_tem.setText(shijian.getNeirong());
         if(shijian.getPhoto()!=null)
-        photo.setImageBitmap(shijian.getPhoto());
+          photo.setImageBitmap(shijian.getPhoto());
 
         dbHelper=new MyDatabaseHelper(this,"ShiJian.db",null,1);  //创建事件数据库
     }

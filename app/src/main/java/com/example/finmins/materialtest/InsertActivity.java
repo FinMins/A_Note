@@ -149,7 +149,7 @@ public class InsertActivity extends AppCompatActivity {
 
 
         //单击添加按钮时的功能
-        tianjia.setOnClickListener(new  View.OnClickListener(){
+        dui.setOnClickListener(new  View.OnClickListener(){
             public void onClick(View v){
                 dbHelper.getWritableDatabase();
                 //判断标题是否为空
@@ -190,7 +190,7 @@ public class InsertActivity extends AppCompatActivity {
             }
         });
 
-        dui.setOnClickListener(new  View.OnClickListener(){
+        tianjia.setOnClickListener(new  View.OnClickListener(){
             public void onClick(View v){
                 dbHelper.getWritableDatabase();
                 //判断标题是否为空
@@ -208,17 +208,25 @@ public class InsertActivity extends AppCompatActivity {
                             String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) )+"分"+
                             String.valueOf(Calendar.getInstance().get(Calendar.SECOND))+"秒");
                     shijian.setImgId(0);
+                    Log.d("InserActivity", "进去了么？ ");
+                    if(bitmap!=null){
+                        Log.d("InserActivity", "点了么？ ");
+                        byte[] images = img(bitmap);
+                        shijian.setPhoto(images);
+                    }
+                    else{
+                        Log.d("InserActivity", "bitmap为空 ");
+                    }
                     shijian.save();
                     shiJian_id =shijian.getId();
                     if(isAlarm==1)
                         addAlarm();
                     Toast.makeText(InsertActivity.this,"事件添加成功！，id为"+String.valueOf(shiJian_id),Toast.LENGTH_SHORT).show();
                     ImageButton btn_a= (ImageButton) findViewById(R.id.dui);
-
                     btn_a.setVisibility(View.VISIBLE);
                     ImageButton btn_b = (ImageButton) findViewById(R.id.dui);
                     btn_b.setVisibility(View.INVISIBLE);
-                     finish();
+                    finish();
                 }
             }
         });
