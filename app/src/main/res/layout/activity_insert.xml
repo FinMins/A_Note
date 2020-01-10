@@ -23,30 +23,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+        <!--
         <ImageButton
+            android:id="@+id/isChangedShiJianInInsertLayout"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="10dp"
-            android:id="@+id/dui"
             android:src="@mipmap/dui"
             android:scaleType="fitXY"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@color/colorPrimary"
             />
+        -->
         <ImageButton
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="16dp"
-            android:id="@+id/fanhui"
-            android:src="@mipmap/fanhui"
-            android:scaleType="fitXY"
-            android:layout_width="25dp"
-            android:layout_height="17dp"
-            android:background="@color/colorPrimary"
-            />
-        <ImageButton
-            android:layout_marginLeft="170dp"
+            android:id="@+id/addCameraInInsertLayout"
+            android:layout_marginLeft="200dp"
             android:layout_marginTop="10dp"
-            android:id="@+id/photo"
             android:src="@mipmap/xiangji"
             android:scaleType="fitXY"
             android:layout_width="25dp"
@@ -54,9 +46,20 @@
             android:background="@color/colorPrimary"
             />
         <ImageButton
+            android:id="@+id/addAlbumInInsertLayout"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
-            android:id="@+id/naozhong"
+            android:src="@mipmap/xiangce"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            />
+        <ImageButton
+            android:id="@+id/addAlarmClockInInsertLayout"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+
             android:src="@mipmap/shizhong"
             android:scaleType="fitXY"
             android:layout_width="25dp"
@@ -64,9 +67,9 @@
             android:background="@color/colorPrimary"/>
 
         <ImageButton
+            android:id="@+id/addSoundRecordingInInsertLayout"
             android:layout_marginLeft="9dp"
             android:layout_marginTop="10dp"
-            android:id="@+id/yuyin"
             android:src="@mipmap/yuyin"
             android:scaleType="fitXY"
             android:layout_width="25dp"
@@ -77,7 +80,7 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/editText_biaoti"
+        android:id="@+id/editTextBiaotiInInsertLayout"
         android:layout_marginTop="25dp"
         android:layout_width="match_parent"
         android:layout_height="100px"
@@ -96,7 +99,7 @@
         >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="150dp"
             android:layout_marginTop="50dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
@@ -105,20 +108,20 @@
             android:background="@drawable/shape_corner"
             >
                 <EditText
-
                     android:maxLines="4"
                     android:gravity="top"
-                    android:id="@+id/editText_neirong"
+                    android:id="@+id/editTextNeirongInInsertLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_corner"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:hint="请输入事件内容    （ps:上面两个图标是可以点的，只是还没写活动）                                                               "
+                    android:hint="请输入事件内容    "
                     android:paddingLeft="10dip"
                     />
                        <ImageView
-                           android:id="@+id/myphoto"
+                           android:layout_marginTop="10dp"
+                           android:id="@+id/editTextPhotoInInsertLayout"
                            android:layout_gravity="center_horizontal"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
@@ -126,15 +129,17 @@
                           />
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/tianjia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:src="@drawable/jiahao"
-            android:color="#5fc9ff"
-            android:layout_marginBottom="50px"
-            android:paddingLeft="50px"/>
+
+             <android.support.design.widget.FloatingActionButton
+                 android:id="@+id/addShiJianFloatInInsert"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="bottom|end"
+                 android:src="@drawable/jiahao"
+                 android:color="@color/colorPrimary"
+                 android:layout_marginBottom="50px"
+                 android:paddingLeft="50px"/>
+
 
 
 
