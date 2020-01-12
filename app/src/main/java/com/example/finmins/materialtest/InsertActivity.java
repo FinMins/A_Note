@@ -1,11 +1,15 @@
 package com.example.finmins.materialtest;
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -14,8 +18,12 @@ import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -28,7 +36,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,6 +45,8 @@ import java.nio.InvalidMarkException;
 import java.util.Calendar;
 
 public class InsertActivity extends AppCompatActivity {
+    public static  final int TAKE_PHOTO = 1;
+    public static final  int  CHOOSE_PHOTO = 2;
     private  ImageButton addAlarmClock;    //添加闹钟按钮
     private ImageButton addAlbum;   // 从相册添加图片按钮
     private ImageButton addSoundRecoding;    //添加录音按钮
@@ -66,7 +75,7 @@ public class InsertActivity extends AppCompatActivity {
         switch (requestCode){
 
             //返回图片
-            case 1:
+            case TAKE_PHOTO:
                 if(resultCode == RESULT_OK){
                     try{
                         //将拍摄的照片显示出来
@@ -84,9 +93,90 @@ public class InsertActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+            case CHOOSE_PHOTO:
+                if(resultCode == RESULT_OK){
+                    //判断手机系统版本号
+                    if (Build.VERSION.SDK_INT >= 19) {
+                        //4.4及以上系统使用这个方法处理图片
+                        handleImageOnKitKat(data);
+                    }else{
+                        //4.4以下系统使用这个方法处理图片
+                        handleImageOnKitKat(data);
+                    }
+                }
+                break;
+               default:
+                   break;
+
         }
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 1:
+                 if (grantResults.length>0&&grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                     openAlbum();
+                 }else{
+                     Toast.makeText(this,"被拒绝",Toast.LENGTH_SHORT).show();
+                 }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleImageOnKitKat(Intent data){
+    String imagePath = null;
+    Uri uri = data.getData();
+    if(DocumentsContract.isDocumentUri(this,uri)){
+        //如果是documejt类型的Uri,则通过document id处理
+        String docId = DocumentsContract.getDocumentId(uri);
+        if("com.android.providers.media.documents".equals(uri.getAuthority())){
+            String id = docId.split(":")[1];//解析出数字格式的id
+            String selection = MediaStore.Images.Media._ID+ "=" + id;
+        }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
+            Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
+            imagePath = getImagePath(contentUri,null);
+        }
+        else if ("content".equalsIgnoreCase(uri.getScheme())){
+            //如果是content类型的uri，则使用普通方式处理
+            imagePath = getImagePath(uri,null);
+        }else if("file".equalsIgnoreCase(uri.getScheme())){
+            //如果是file类型的U日，直接获取图片路径即可
+            imagePath=uri.getPath();
+        }
+        displayImage(imagePath);//根据图片路径显示图片
+    }
+}
+    private  void handleImageBeforeKitKat(Intent data){
+        Uri uri = data.getData();
+        String imagePath = getImagePath(uri,null);
+        displayImage(imagePath);
+    }
+
+    private String getImagePath(Uri uri,String selection){
+        String path = null;
+        //通过Uri和selection来获取真实的图片路径
+        Cursor cursor = getContentResolver().query(uri,null,selection,null,null);
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
+
+    private void displayImage(String imagePath){
+        if(imagePath != null){
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            editTextPhoto.setImageBitmap(bitmap);
+        }else{
+            Toast.makeText(this,"得到图片失败",Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,12 +214,21 @@ public class InsertActivity extends AppCompatActivity {
         /**单击语音图片时的功能
          *
          */
-
         addSoundRecoding.setOnClickListener(new  View.OnClickListener(){
             public void onClick(View v){
-                Toast.makeText(InsertActivity.this,"功能待开发",Toast.LENGTH_SHORT).show();
+                if(ContextCompat.checkSelfPermission(InsertActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(InsertActivity.this,new
+                            String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
+                else{
+                    openAlbum();
+                }
             }
         });
+
+
+
+
 
         /**单击相册图片时的功能
          *
@@ -137,7 +236,8 @@ public class InsertActivity extends AppCompatActivity {
         addAlbum.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Toast.makeText(InsertActivity.this,"相册功能待开发",Toast.LENGTH_SHORT).show();
+
+
             }
         });
 
@@ -147,7 +247,6 @@ public class InsertActivity extends AppCompatActivity {
         editTextPhoto.setOnLongClickListener(new View.OnLongClickListener(){
 
             public boolean onLongClick(View v) {
-
                 AlertDialog.Builder dialog= new AlertDialog.Builder(InsertActivity.this);
                 dialog.setTitle("通知");
                 dialog.setMessage("是否删除图片？");
@@ -196,7 +295,7 @@ public class InsertActivity extends AppCompatActivity {
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 
                 intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent,TAKE_PHOTO);
             } });
 
 
@@ -253,6 +352,16 @@ public class InsertActivity extends AppCompatActivity {
         addShiJian = (ImageButton) findViewById(R.id.addShiJianFloatInInsert);    //获取修改事件控件
         addCamera = (ImageButton)findViewById(R.id.addCameraInInsertLayout);                   //获取照相控件
         editTextPhoto=(ImageView) findViewById(R.id.editTextPhotoInInsertLayout);        //获取文本款中图片控件
+    }
+
+
+    /**
+     * 打开相册
+     */
+    private void openAlbum(){
+        Intent intent = new Intent ("android.intent.action.GET_CONTENT");
+        intent.setType("image/*");
+        startActivityForResult(intent,CHOOSE_PHOTO);//打开相册
     }
 
     //添加闹钟
