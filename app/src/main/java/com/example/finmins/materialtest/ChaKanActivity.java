@@ -1,5 +1,6 @@
 package com.example.finmins.materialtest;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
@@ -20,6 +21,8 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -60,10 +63,11 @@ public class ChaKanActivity extends AppCompatActivity {
     private int minute_alarm;   //闹钟的的分钟
     private int isAlarm;     // 事件是否有闹钟
     private ImageView editTextPhoto;         //事件里的图片
+    private ImageView editTextAlbum;        //事件里的相册图片
     private Uri imageUri;     //获取到的图片转化成Uri地址
     //private ImageView myphoto;    //事件的图片
     private Bitmap bitmap;        //图片的转换bitmap形式
-    private byte[] images = new byte[1024];    //图片的转换二进制形式
+    private byte[] imagesByPhoto = new byte[1024];    //图片的转换二进制形式
     private ShiJian shijian;        //事件
 
 
@@ -75,35 +79,31 @@ public class ChaKanActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
-
             //返回图片
             case TAKE_PHOTO:
                 if(resultCode == RESULT_OK){
                     try{
                         //将拍摄的照片显示出来
                         Bitmap bitmap1 = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                        Matrix matrix = new Matrix();
-                        //设置图片的大小
-                        matrix.setScale(0.277f, 0.277f);
-                        Bitmap bitmap2 = Bitmap.createBitmap( bitmap1, 0, 0,  bitmap1.getWidth(), bitmap1.getHeight(), matrix, false);
-                        //将图片旋转xx度
-                        matrix.setRotate(90f);
-                        bitmap = Bitmap.createBitmap( bitmap2, 0, 0,  bitmap2.getWidth(), bitmap2.getHeight(), matrix, false);
+                        bitmap = setBitmap(bitmap1,0.277f,90f);
+                        imagesByPhoto=img(bitmap);
                         //将图片展示出来
                         editTextPhoto.setImageBitmap(bitmap);
                     }catch (FileNotFoundException e){
                         e.printStackTrace();
                     }
                 }
+                break;
             case CHOOSE_PHOTO:
                 if(resultCode == RESULT_OK){
                     //判断手机系统版本号
                     if (Build.VERSION.SDK_INT >= 19) {
                         //4.4及以上系统使用这个方法处理图片
-                        handleImageOnKitKat(data);
+                      handleImageOnKitKat(data);
+                        Log.d(TAG, "在这444");
                     }else{
                         //4.4以下系统使用这个方法处理图片
-                        handleImageOnKitKat(data);
+                      handleImageOnKitKat(data);
                     }
                 }
                 break;
@@ -113,6 +113,8 @@ public class ChaKanActivity extends AppCompatActivity {
         }
     }
 
+
+    //相册功能
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -128,10 +130,13 @@ public class ChaKanActivity extends AppCompatActivity {
                 break;
         }
     }
+
     private void openAlbum(){
         Intent intent = new Intent ("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
+
         startActivityForResult(intent,CHOOSE_PHOTO);//打开相册
+        Log.d(TAG, "在这333");
     }
 
     private void handleImageOnKitKat(Intent data){
@@ -143,6 +148,7 @@ public class ChaKanActivity extends AppCompatActivity {
             if("com.android.providers.media.documents".equals(uri.getAuthority())){
                 String id = docId.split(":")[1];//解析出数字格式的id
                 String selection = MediaStore.Images.Media._ID+ "=" + id;
+                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
             }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
                 Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
                 imagePath = getImagePath(contentUri,null);
@@ -157,6 +163,7 @@ public class ChaKanActivity extends AppCompatActivity {
             displayImage(imagePath);//根据图片路径显示图片
         }
     }
+
     private  void handleImageBeforeKitKat(Intent data){
         Uri uri = data.getData();
         String imagePath = getImagePath(uri,null);
@@ -179,6 +186,8 @@ public class ChaKanActivity extends AppCompatActivity {
     private void displayImage(String imagePath){
         if(imagePath != null){
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            bitmap = setBitmap(bitmap,0.277f,90f);
+            imagesByPhoto = img(bitmap);
             editTextPhoto.setImageBitmap(bitmap);
         }else{
             Toast.makeText(this,"得到图片失败",Toast.LENGTH_SHORT).show();
@@ -189,15 +198,22 @@ public class ChaKanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_insert);
+        setContentView(R.layout.activity_cha_kan);
         //完成初始化界面
         getPosition();
 
           //点击相册的功能
         addAlbum.setOnClickListener(new View.OnClickListener(){
-            @Override
             public void onClick(View v) {
-                Toast.makeText(ChaKanActivity.this,"相册功能待开发",Toast.LENGTH_SHORT).show();
+                if(ContextCompat.checkSelfPermission(ChaKanActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+
+                    ActivityCompat.requestPermissions(ChaKanActivity.this,new
+                            String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
+                else{
+                    Log.d(TAG, "点击了打开相册");
+                    openAlbum();
+                }
             }
         });
 
@@ -240,7 +256,7 @@ public class ChaKanActivity extends AppCompatActivity {
                  public void onClick(DialogInterface dialog, int which) {
                      editTextPhoto.setImageBitmap(null);
 
-                     images=null;
+                     imagesByPhoto=null;
                  }
              });
              dialog.setNegativeButton("否",new DialogInterface.OnClickListener(){
@@ -294,12 +310,13 @@ public class ChaKanActivity extends AppCompatActivity {
                     shijian.setBiaoti(editTextBiaoTi.getText().toString());
                     shijian.setNeirong(editTextNeiRong.getText().toString());
 
-                    shijian.setPhoto(images);
-                    if(images==null) {
+                 //   shijian.setPhoto(imagesByPhoto);
+                    if(imagesByPhoto==null) {
+
                         shijian.setToDefault("photo");
                     }
                     else{
-                        shijian.setPhoto(images);
+                        shijian.setPhoto(imagesByPhoto);
                     }
                     shijian.update(shiJian_id);
                     if(isAlarm==1)
@@ -337,8 +354,10 @@ public class ChaKanActivity extends AppCompatActivity {
 
         //从数据库里获取图片
         if(shijian.getPhoto()!=null)
-        {editTextPhoto.setImageBitmap(shijian.getPhoto());
-          images = img(shijian.getPhoto());
+        {
+            Log.d(TAG, "不为空");
+            editTextPhoto.setImageBitmap(shijian.getPhoto());
+          imagesByPhoto = img(shijian.getPhoto());
         }
         dbHelper=new MyDatabaseHelper(this,"ShiJian.db",null,1);  //创建事件数据库
     }
@@ -364,6 +383,17 @@ public class ChaKanActivity extends AppCompatActivity {
         c.set(Calendar.MINUTE,minute_alarm);//设置闹钟的分钟数.
         c.set(Calendar.SECOND,0);//设置闹钟的秒数
         alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),alarmPendingIntent);
+    }
+
+    //图片优化
+    public Bitmap setBitmap(Bitmap bitmap,float big , float rangle){
+        Matrix matrix = new Matrix();
+        //设置图片的大小
+        matrix.setScale(big, big);
+        Bitmap bitmapTmp = Bitmap.createBitmap( bitmap, 0, 0,  bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        //将图片旋转xx度
+        matrix.setRotate(rangle);
+        return Bitmap.createBitmap( bitmapTmp, 0, 0,  bitmapTmp.getWidth(), bitmapTmp.getHeight(), matrix, false);
     }
 
 }

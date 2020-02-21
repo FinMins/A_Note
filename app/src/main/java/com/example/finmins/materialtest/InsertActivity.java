@@ -45,6 +45,7 @@ import java.nio.InvalidMarkException;
 import java.util.Calendar;
 
 public class InsertActivity extends AppCompatActivity {
+    private static  final  String TAG ="InsertAcitvity.this";
     public static  final int TAKE_PHOTO = 1;
     public static final  int  CHOOSE_PHOTO = 2;
     private  ImageButton addAlarmClock;    //添加闹钟按钮
@@ -68,48 +69,44 @@ public class InsertActivity extends AppCompatActivity {
     /**接受自己输入的图片并展示
      * 调节图片大小
      * 调节图片的显示效果
-     */
-    @Override
+     */  @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+      //  super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
-
             //返回图片
             case TAKE_PHOTO:
                 if(resultCode == RESULT_OK){
                     try{
                         //将拍摄的照片显示出来
                         Bitmap bitmap1 = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                        Matrix matrix = new Matrix();
-                        //设置图片的大小
-                        matrix.setScale(0.277f, 0.277f);
-                        Bitmap bitmap2 = Bitmap.createBitmap( bitmap1, 0, 0,  bitmap1.getWidth(), bitmap1.getHeight(), matrix, false);
-                        //将图片旋转xx度
-                        matrix.setRotate(90f);
-                        bitmap = Bitmap.createBitmap( bitmap2, 0, 0,  bitmap2.getWidth(), bitmap2.getHeight(), matrix, false);
-                       //将图片展示出来
+                        bitmap = setBitmap(bitmap1,0.277f,90f);
+                        images=img(bitmap);
+                        //将图片展示出来
                         editTextPhoto.setImageBitmap(bitmap);
                     }catch (FileNotFoundException e){
                         e.printStackTrace();
                     }
                 }
+                break;
             case CHOOSE_PHOTO:
                 if(resultCode == RESULT_OK){
                     //判断手机系统版本号
                     if (Build.VERSION.SDK_INT >= 19) {
                         //4.4及以上系统使用这个方法处理图片
                         handleImageOnKitKat(data);
+                        Log.d(TAG, "在这444");
                     }else{
                         //4.4以下系统使用这个方法处理图片
                         handleImageOnKitKat(data);
                     }
                 }
                 break;
-               default:
-                   break;
+            default:
+                break;
 
         }
     }
+
 
 
     @Override
@@ -128,33 +125,36 @@ public class InsertActivity extends AppCompatActivity {
     }
 
     private void handleImageOnKitKat(Intent data){
-    String imagePath = null;
-    Uri uri = data.getData();
-    if(DocumentsContract.isDocumentUri(this,uri)){
-        //如果是documejt类型的Uri,则通过document id处理
-        String docId = DocumentsContract.getDocumentId(uri);
-        if("com.android.providers.media.documents".equals(uri.getAuthority())){
-            String id = docId.split(":")[1];//解析出数字格式的id
-            String selection = MediaStore.Images.Media._ID+ "=" + id;
-        }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
-            Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
-            imagePath = getImagePath(contentUri,null);
+        String imagePath = null;
+        Uri uri = data.getData();
+        if(DocumentsContract.isDocumentUri(this,uri)){
+            //如果是documejt类型的Uri,则通过document id处理
+            String docId = DocumentsContract.getDocumentId(uri);
+            if("com.android.providers.media.documents".equals(uri.getAuthority())){
+                String id = docId.split(":")[1];//解析出数字格式的id
+                String selection = MediaStore.Images.Media._ID+ "=" + id;
+                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
+            }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
+                imagePath = getImagePath(contentUri,null);
+            }
+            else if ("content".equalsIgnoreCase(uri.getScheme())){
+                //如果是content类型的uri，则使用普通方式处理
+                imagePath = getImagePath(uri,null);
+            }else if("file".equalsIgnoreCase(uri.getScheme())){
+                //如果是file类型的U日，直接获取图片路径即可
+                imagePath=uri.getPath();
+            }
+            displayImage(imagePath);//根据图片路径显示图片
         }
-        else if ("content".equalsIgnoreCase(uri.getScheme())){
-            //如果是content类型的uri，则使用普通方式处理
-            imagePath = getImagePath(uri,null);
-        }else if("file".equalsIgnoreCase(uri.getScheme())){
-            //如果是file类型的U日，直接获取图片路径即可
-            imagePath=uri.getPath();
-        }
-        displayImage(imagePath);//根据图片路径显示图片
     }
-}
+
     private  void handleImageBeforeKitKat(Intent data){
         Uri uri = data.getData();
         String imagePath = getImagePath(uri,null);
         displayImage(imagePath);
     }
+
 
     private String getImagePath(Uri uri,String selection){
         String path = null;
@@ -168,10 +168,11 @@ public class InsertActivity extends AppCompatActivity {
         }
         return path;
     }
-
     private void displayImage(String imagePath){
         if(imagePath != null){
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            Bitmap bitmap1 = BitmapFactory.decodeFile(imagePath);
+            bitmap = setBitmap(bitmap1,0.277f,90f);
+            images = img(bitmap);
             editTextPhoto.setImageBitmap(bitmap);
         }else{
             Toast.makeText(this,"得到图片失败",Toast.LENGTH_SHORT).show();
@@ -236,7 +237,13 @@ public class InsertActivity extends AppCompatActivity {
         addAlbum.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
+                if(ContextCompat.checkSelfPermission(InsertActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(InsertActivity.this,new
+                            String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
+                else{
+                    openAlbum();
+                }
 
             }
         });
@@ -276,10 +283,9 @@ public class InsertActivity extends AppCompatActivity {
         addCamera.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
                 File outputImage = new File(getExternalCacheDir(),"output_image.jpg");
                 try{
-                    if ((outputImage.exists())){
+                    if (outputImage.exists()){
                         outputImage.delete();
                     }
                     outputImage.createNewFile();
@@ -293,7 +299,6 @@ public class InsertActivity extends AppCompatActivity {
                 }
                 //启动相机程序
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-
                 intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
                 startActivityForResult(intent,TAKE_PHOTO);
             } });
@@ -321,8 +326,8 @@ public class InsertActivity extends AppCompatActivity {
                             String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) )+"分"+
                             String.valueOf(Calendar.getInstance().get(Calendar.SECOND))+"秒");
                     shijian.setImgId(0);
-                    if(bitmap!=null){
-                        byte[] images = img(bitmap);
+                    if(images!=null){
+
                         shijian.setPhoto(images);
                     }
                    if( shijian.save()){
@@ -381,5 +386,14 @@ public class InsertActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
         return baos.toByteArray();
     }
-
+   //对图片进行优化
+    public Bitmap setBitmap(Bitmap bitmap,float big , float rangle){
+        Matrix matrix = new Matrix();
+        //设置图片的大小
+        matrix.setScale(big, big);
+        Bitmap bitmapTmp = Bitmap.createBitmap( bitmap, 0, 0,  bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        //将图片旋转xx度
+        matrix.setRotate(rangle);
+        return Bitmap.createBitmap( bitmapTmp, 0, 0,  bitmapTmp.getWidth(), bitmapTmp.getHeight(), matrix, false);
+    }
 }

@@ -166,13 +166,12 @@ public class MainActivity extends AppCompatActivity  {
           shiJianAdapter.setMode(Attributes.Mode.Single);
          recyclerView.setAdapter(shiJianAdapter);
           recyclerView.setSelected(true);
-
-
           initShijian();
         shiJianAdapter.notifyDataSetChanged();
 
         initEvents();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -237,7 +236,9 @@ public class MainActivity extends AppCompatActivity  {
 
                  //点击测试按钮
                 case R.id.backup:
-                    Toast.makeText(MainActivity.this,"You clicked Search",Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(MainActivity.this,"You clicked Search",Toast.LENGTH_SHORT).show();
+                    Intent intentSearch  = new Intent(MainActivity.this,SearchActivity.class);
+                    startActivity(intentSearch);
                     break;
 
                 //点击？按钮
@@ -249,6 +250,7 @@ public class MainActivity extends AppCompatActivity  {
             }
             return true;
         }
+
 
     }
 

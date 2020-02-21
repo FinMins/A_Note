@@ -34,8 +34,6 @@ public class ShiJian extends DataSupport {
 
     }
     public void setPhoto(byte[] photo){
-
-
         this.photo=photo;
         Log.d(TAG,"Testshijan里photo为"+ String.valueOf(photo));
     }
