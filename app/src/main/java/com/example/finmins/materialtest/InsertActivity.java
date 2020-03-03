@@ -48,6 +48,7 @@ public class InsertActivity extends AppCompatActivity {
     private static  final  String TAG ="InsertAcitvity.this";
     public static  final int TAKE_PHOTO = 1;
     public static final  int  CHOOSE_PHOTO = 2;
+    public static final  int DRAW_PHOTO= 3 ;
     private  ImageButton addAlarmClock;    //添加闹钟按钮
     private ImageButton addAlbum;   // 从相册添加图片按钮
     private ImageButton addSoundRecoding;    //添加录音按钮
@@ -63,7 +64,8 @@ public class InsertActivity extends AppCompatActivity {
     private Uri imageUri;      //图片的Uri转换表
     private ImageView  editTextPhoto;    //文本框里的图片控件
     private Bitmap bitmap;      //图片的bitmap转化
-    private byte[] images = new byte[1024];    //图片的二进制转化
+    private ImageButton drawBoard;    //画板控件
+      private byte[] images = new byte[1024];    //图片的二进制转化
 
 
     /**接受自己输入的图片并展示
@@ -79,6 +81,7 @@ public class InsertActivity extends AppCompatActivity {
                     try{
                         //将拍摄的照片显示出来
                         Bitmap bitmap1 = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                     //   Log.d(TAG,"摄像里是"+imageUri.toString());
                         bitmap = setBitmap(bitmap1,0.277f,90f);
                         images=img(bitmap);
                         //将图片展示出来
@@ -99,6 +102,22 @@ public class InsertActivity extends AppCompatActivity {
                         //4.4以下系统使用这个方法处理图片
                         handleImageOnKitKat(data);
                     }
+                }
+                break;
+            case DRAW_PHOTO:
+                if(resultCode == RESULT_OK){
+                    imageUri =Uri.parse(data.getStringExtra("ImageUriPath"));
+                    try{
+                        Bitmap bitmap1 =  BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                        bitmap = setBitmap(bitmap1,0.277f,90f);
+                        images=img(bitmap);
+                        //将图片展示出来
+                        editTextPhoto.setImageBitmap(bitmap);
+                    }catch (FileNotFoundException e){
+                        e.printStackTrace();
+                    }
+                  //  Log.d(TAG,"插入里的是"+data.getStringExtra("ImageUriPath"));
+             //     Bitmap bitmap =  BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
                 }
                 break;
             default:
@@ -217,13 +236,7 @@ public class InsertActivity extends AppCompatActivity {
          */
         addSoundRecoding.setOnClickListener(new  View.OnClickListener(){
             public void onClick(View v){
-                if(ContextCompat.checkSelfPermission(InsertActivity.this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(InsertActivity.this,new
-                            String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
-                else{
-                    openAlbum();
-                }
+              //录音代码
             }
         });
 
@@ -303,6 +316,13 @@ public class InsertActivity extends AppCompatActivity {
                 startActivityForResult(intent,TAKE_PHOTO);
             } });
 
+        //单击画板时的功能
+        drawBoard.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+              Intent intent = new Intent(InsertActivity.this,DrawboardActivity.class);
+                startActivityForResult(intent,DRAW_PHOTO);
+            } });
 
 
 
@@ -357,6 +377,7 @@ public class InsertActivity extends AppCompatActivity {
         addShiJian = (ImageButton) findViewById(R.id.addShiJianFloatInInsert);    //获取修改事件控件
         addCamera = (ImageButton)findViewById(R.id.addCameraInInsertLayout);                   //获取照相控件
         editTextPhoto=(ImageView) findViewById(R.id.editTextPhotoInInsertLayout);        //获取文本款中图片控件
+        drawBoard =(ImageButton)findViewById(R.id.drawInInsertLayout);     //获取画板控件
     }
 
 

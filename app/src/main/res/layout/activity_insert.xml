@@ -37,7 +37,7 @@
         -->
         <ImageButton
             android:id="@+id/addCameraInInsertLayout"
-            android:layout_marginLeft="200dp"
+            android:layout_marginLeft="170dp"
             android:layout_marginTop="10dp"
             android:src="@mipmap/xiangji"
             android:scaleType="fitXY"
@@ -45,6 +45,17 @@
             android:layout_height="25dp"
             android:background="@color/colorPrimary"
             />
+        <ImageButton
+            android:id="@+id/drawInInsertLayout"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/draw"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            />
+
         <ImageButton
             android:id="@+id/addAlbumInInsertLayout"
             android:layout_marginLeft="15dp"

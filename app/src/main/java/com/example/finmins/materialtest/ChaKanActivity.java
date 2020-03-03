@@ -48,6 +48,7 @@ import java.util.List;
 public class ChaKanActivity extends AppCompatActivity {
     private static final  int TAKE_PHOTO = 1;
     private static final int CHOOSE_PHOTO = 2;
+    private static  final  int DRAW_PHOTO = 3 ;
     private static final  String TAG ="ChaKanActivity.this";
     private ImageButton addCream;    //照相图片
     private ImageButton addAlbum;    //相册图片
@@ -69,7 +70,7 @@ public class ChaKanActivity extends AppCompatActivity {
     private Bitmap bitmap;        //图片的转换bitmap形式
     private byte[] imagesByPhoto = new byte[1024];    //图片的转换二进制形式
     private ShiJian shijian;        //事件
-
+   private  ImageButton drawBoard;     //画板控件
 
     /**接受自己输入的图片并展示
      * 调节图片大小
@@ -105,6 +106,22 @@ public class ChaKanActivity extends AppCompatActivity {
                         //4.4以下系统使用这个方法处理图片
                       handleImageOnKitKat(data);
                     }
+                }
+                break;
+            case DRAW_PHOTO:
+                if(resultCode == RESULT_OK){
+                    imageUri =Uri.parse(data.getStringExtra("ImageUriPath"));
+                    try{
+                        Bitmap bitmap1 =  BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                        bitmap = setBitmap(bitmap1,0.277f,90f);
+                        imagesByPhoto=img(bitmap);
+                        //将图片展示出来
+                        editTextPhoto.setImageBitmap(bitmap);
+                    }catch (FileNotFoundException e){
+                        e.printStackTrace();
+                    }
+                    //  Log.d(TAG,"插入里的是"+data.getStringExtra("ImageUriPath"));
+                    //     Bitmap bitmap =  BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
                 }
                 break;
             default:
@@ -327,6 +344,13 @@ public class ChaKanActivity extends AppCompatActivity {
             }
         });
 
+//单击画板时的功能
+        drawBoard.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChaKanActivity.this,DrawboardActivity.class);
+                startActivityForResult(intent,DRAW_PHOTO);
+            } });
 
 
     }
@@ -351,7 +375,7 @@ public class ChaKanActivity extends AppCompatActivity {
         editTextBiaoTi.setText(shijian.getBiaoti());              //输出获得的标题
         editTextNeiRong.setText(shijian.getNeirong());        //输出获得的内容
         addCream=(ImageButton)findViewById(R.id.addCameraInChaKanLayout);          //获取活动里的相机控件
-
+       drawBoard = (ImageButton)findViewById(R.id.drawInChaKanLayout);    //获取画板控件
         //从数据库里获取图片
         if(shijian.getPhoto()!=null)
         {

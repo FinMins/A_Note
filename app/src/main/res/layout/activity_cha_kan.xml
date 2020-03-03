@@ -30,10 +30,20 @@
             android:background="@color/colorPrimary"
             />
         <ImageButton
-            android:layout_marginLeft="170dp"
-            android:layout_marginTop="10dp"
             android:id="@+id/addCameraInChaKanLayout"
+            android:layout_marginLeft="120dp"
+            android:layout_marginTop="10dp"
             android:src="@mipmap/xiangji"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            />
+        <ImageButton
+            android:id="@+id/drawInChaKanLayout"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/draw"
             android:scaleType="fitXY"
             android:layout_width="25dp"
             android:layout_height="25dp"

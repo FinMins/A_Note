@@ -78,6 +78,9 @@
             android:name=".SearchActivity"
             android:label="@string/title_activity_search"
             android:theme="@style/AppTheme" />
+        <activity android:name=".DrawboardActivity">
+
+        </activity>
     </application>
 
 </manifest>
