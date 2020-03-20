@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,7 +49,9 @@ public class InsertActivity extends AppCompatActivity {
     private static  final  String TAG ="InsertAcitvity.this";
     public static  final int TAKE_PHOTO = 1;
     public static final  int  CHOOSE_PHOTO = 2;
-    public static final  int DRAW_PHOTO= 3 ;
+    public static final  int DRAW_PHOTO = 3 ;
+    public static  final  int SOUNDRECODER = 4 ;
+    public static final int ISVISIBILITY = 0 ;
     private  ImageButton addAlarmClock;    //添加闹钟按钮
     private ImageButton addAlbum;   // 从相册添加图片按钮
     private ImageButton addSoundRecoding;    //添加录音按钮
@@ -65,8 +68,8 @@ public class InsertActivity extends AppCompatActivity {
     private ImageView  editTextPhoto;    //文本框里的图片控件
     private Bitmap bitmap;      //图片的bitmap转化
     private ImageButton drawBoard;    //画板控件
-      private byte[] images = new byte[1024];    //图片的二进制转化
-
+    private byte[] images = new byte[1024];    //图片的二进制转化
+    private Button playSoundRecoder ;     //播放录音按钮
 
     /**接受自己输入的图片并展示
      * 调节图片大小
@@ -120,6 +123,8 @@ public class InsertActivity extends AppCompatActivity {
              //     Bitmap bitmap =  BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
                 }
                 break;
+            case  SOUNDRECODER:
+
             default:
                 break;
 
@@ -203,6 +208,7 @@ public class InsertActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
 
+
         initSet();   //初始化事件
         dbHelper=new MyDatabaseHelper(this,"ShiJian.db",null,1);  //创建事件数据库
 
@@ -237,6 +243,7 @@ public class InsertActivity extends AppCompatActivity {
         addSoundRecoding.setOnClickListener(new  View.OnClickListener(){
             public void onClick(View v){
               //录音代码
+
             }
         });
 
@@ -324,7 +331,15 @@ public class InsertActivity extends AppCompatActivity {
                 startActivityForResult(intent,DRAW_PHOTO);
             } });
 
+      //点击播放录音按钮
+        playSoundRecoder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //功能
 
+
+            }
+        });
 
 
         //单击添加按钮时的功能
@@ -378,6 +393,11 @@ public class InsertActivity extends AppCompatActivity {
         addCamera = (ImageButton)findViewById(R.id.addCameraInInsertLayout);                   //获取照相控件
         editTextPhoto=(ImageView) findViewById(R.id.editTextPhotoInInsertLayout);        //获取文本款中图片控件
         drawBoard =(ImageButton)findViewById(R.id.drawInInsertLayout);     //获取画板控件
+        playSoundRecoder = (Button)findViewById(R.id.soundRecoderInInsertLayout);   //获取播放按钮.
+        //每次进来 前先判断是否打开按钮，默认没有，然后改了个值就有
+        if(ISVISIBILITY == 1){
+            playSoundRecoder.setVisibility( View.VISIBLE);
+        }
     }
 
 
