@@ -1,10 +1,15 @@
 package com.example.finmins.materialtest;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -40,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.util.DisplayMetrics;
 import java.io.File;
+import java.lang.String;
 public class MainActivity extends AppCompatActivity  {
 
     private DrawerLayout mDrawerLayout;   //侧滑栏
@@ -71,28 +77,29 @@ public class MainActivity extends AppCompatActivity  {
         super.onResume();
         Refresh();
         initEvents();
+
     }
 
 
     //adapter点击事件
         public void initEvents(){
-        shiJianAdapter.setOnItemClickLitener(new ShiJianAdapter.OnItemClickLitener(){
+        shiJianAdapter.setOnItemClickLitener(new ShiJianAdapter.OnItemClickLitener() {
 
             //根据ID进入事件具体内容
             @Override
-            public void onItemClick(View view, int position,int id) {
+            public void onItemClick(View view, int position, int id) {
                 //创建对应的intent
-              Intent intent = new Intent(MainActivity.this,ChaKanActivity.class);
-                intent.putExtra("ids",id);
+                Intent intent = new Intent(MainActivity.this, ChaKanActivity.class);
+                intent.putExtra("ids", id);
                 startActivity(intent);
             }
 
 
             //根据ID删除事件
             @Override
-            public void onDeleteClick(int position,int id) {
-                final int position_item=position;   //获取listview中的位置
-                final int id_item=id;    //事件的id
+            public void onDeleteClick(int position, int id) {
+                final int position_item = position;   //获取listview中的位置
+                final int id_item = id;    //事件的id
 
                 //点击删除时的警告窗口
                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
@@ -101,55 +108,55 @@ public class MainActivity extends AppCompatActivity  {
                 dialog.setCancelable(false);
 
                 //点击确定执行的代码
-                dialog.setPositiveButton("确认",new DialogInterface.OnClickListener(){
+                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
-                     //根据ID删除事件
-                        DataSupport.delete(ShiJian.class,id_item);
+                        //根据ID删除事件
+                        DataSupport.delete(ShiJian.class, id_item);
                         shiJianList.remove(position_item);
                         shiJianAdapter.notifyItemRemoved(position_item);
-                        Toast.makeText(MainActivity.this,"事件删除成功",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "事件删除成功", Toast.LENGTH_SHORT).show();
                     }
                 });
 
                 //点击取消执行的代码
-                dialog.setNegativeButton("取消",new DialogInterface.OnClickListener(){
+                dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //点击取消无任何反应
                     }
                 });
-               dialog.show();
+                dialog.show();
 
 
             }
 
             //根据完成与否设置完成图片
-            public void onSetImgId(int position,int id,ShiJian shijian ){
+            public void onSetImgId(int position, int id, ShiJian shijian) {
 
                 View view = recyclerView.getLayoutManager().findViewByPosition(position);
 
-                ImageView imageView=(ImageView)view.findViewById(R.id.image);
+                ImageView imageView = (ImageView) view.findViewById(R.id.image);
                 //默认的已完成
-                TextView  finish =(TextView)view.findViewById(R.id.swipe_finish);
+                TextView finish = (TextView) view.findViewById(R.id.swipe_finish);
 
-                ShiJian shijian1 =new ShiJian();
+                ShiJian shijian1 = new ShiJian();
 
                 //根据事件imgID设置图片并修改imgID
-                if(shijian.get_imgId()==1){
+                if (shijian.get_imgId() == 1) {
                     shijian1.setToDefault("imgId");
                     shijian1.update(id);
                     imageView.setImageResource(R.mipmap.yuanquan);
                     finish.setText("完成");
-                     } else{
+                } else {
                     shijian1.setImgId(1);
                     shijian1.update(id);
                     imageView.setImageResource(R.mipmap.zhengque);
                     finish.setText("未完成");
-                        }
-              //  shiJianAdapter.notifyDataSetChanged();
-                Refresh();
                 }
+                //  shiJianAdapter.notifyDataSetChanged();
+                Refresh();
+            }
         });
         }
 
@@ -174,6 +181,8 @@ public class MainActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+                checkPermission(MainActivity.this, "android.permission.RECORD_AUDIO", 1);
+                checkPermission(MainActivity.this, "android.permission.WRITE_EXTERNAL_STORAGE", 2);
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
 
@@ -222,7 +231,17 @@ public class MainActivity extends AppCompatActivity  {
                 });
 
         }
-
+    public static boolean checkPermission(Activity act, String permissions, int requestCode) {
+        boolean result = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int check = ContextCompat.checkSelfPermission(act, permissions);
+            if (check != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(act, new String[]{permissions}, requestCode);
+                result = false;
+            }
+        }
+        return result;
+    }
 
 
         public boolean onCreateOptionsMenu(Menu menu){
