@@ -2,10 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.finmins.materialtest">
-
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.persion.WRITE_EXTERNAL_STORAGE" />
@@ -37,7 +36,6 @@
         <activity
             android:name=".AlarmActivity"
             android:theme="@style/Theme.AppCompat" />
-
         <receiver
             android:name=".AlarmTest"
             android:enabled="true"
@@ -47,7 +45,6 @@
             android:name=".ChaKanActivity"
             android:label="请改要修改的内容"
             android:theme="@style/AppTheme" />
-
         <service
             android:name=".LongRunningServiece"
             android:enabled="true"
@@ -59,11 +56,12 @@
         <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<activity android:name=".AudioRecorderActivity">
 
+</activity>
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"

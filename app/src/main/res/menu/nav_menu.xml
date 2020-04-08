@@ -5,13 +5,18 @@
 
 <group android:checkableBehavior="single">
     <item
+        android:id="@+id/mainShiJian"
+        android:icon="@drawable/renyuan"
+        android:title="主页"
+        />
+    <item
             android:icon="@drawable/renyuan"
             android:id="@+id/nav_call"
             android:title="我的好友"/>
     <item
             android:icon="@drawable/xinxi"
             android:id="@+id/nav_friends"
-            android:title="我的消息"/>
+            android:title="我的群组"/>
     <item
             android:icon="@drawable/naozhong"
             android:id="@+id/nav_mail"

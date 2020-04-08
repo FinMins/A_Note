@@ -15,8 +15,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -30,6 +32,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -49,6 +52,7 @@ public class ChaKanActivity extends AppCompatActivity {
     private static final  int TAKE_PHOTO = 1;
     private static final int CHOOSE_PHOTO = 2;
     private static  final  int DRAW_PHOTO = 3 ;
+    private static  final int SOUND_RECODER = 4;
     private static final  String TAG ="ChaKanActivity.this";
     private ImageButton addCream;    //照相图片
     private ImageButton addAlbum;    //相册图片
@@ -71,7 +75,9 @@ public class ChaKanActivity extends AppCompatActivity {
     private byte[] imagesByPhoto = new byte[1024];    //图片的转换二进制形式
     private ShiJian shijian;        //事件
    private  ImageButton drawBoard;     //画板控件
-
+    private Button playSoundRecorder ;    //播放录音控件
+    private String soundRecorderPath;    //录音路径；
+     private  Uri  soundUri ;
     /**接受自己输入的图片并展示
      * 调节图片大小
      * 调节图片的显示效果
@@ -122,6 +128,14 @@ public class ChaKanActivity extends AppCompatActivity {
                     }
                     //  Log.d(TAG,"插入里的是"+data.getStringExtra("ImageUriPath"));
                     //     Bitmap bitmap =  BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                }
+                break;
+            case SOUND_RECODER:
+                if(resultCode == RESULT_OK){
+                    soundRecorderPath = data.getStringExtra("soundRecorderUriPath");    //获取从录音活动传回来的路径
+                    Log.d(TAG,"路径是"+soundRecorderPath );
+                    soundUri = Uri.parse(soundRecorderPath );           //将路径转换成Uri
+                    playSoundRecorder.setVisibility(View.VISIBLE);     //设置播放录音按钮可见
                 }
                 break;
             default:
@@ -259,6 +273,33 @@ public class ChaKanActivity extends AppCompatActivity {
                 startActivityForResult(intent,1);
             } });
 
+        //录音长按删除功能
+        playSoundRecorder.setOnLongClickListener(new View.OnLongClickListener(){
+
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder dialog= new AlertDialog.Builder(ChaKanActivity.this);
+                dialog.setTitle("通知");
+                dialog.setMessage("是否删除录音？");
+                dialog.setCancelable(false);
+                dialog.setPositiveButton("是",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        soundRecorderPath =null;
+                        playSoundRecorder.setVisibility(View.GONE);
+                    }
+                });
+                //点击否不做任何修改
+                dialog.setNegativeButton("否",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                dialog.show();
+                return true;
+            }
+        });
+
+
         //图片长按删除功能
         editTextPhoto.setOnLongClickListener(new View.OnLongClickListener(){
 
@@ -290,7 +331,9 @@ public class ChaKanActivity extends AppCompatActivity {
         //单击语音图片时的功能
         addSoundRecording.setOnClickListener(new  View.OnClickListener(){
             public void onClick(View v){
-                Toast.makeText(ChaKanActivity.this,"录音功能待开发",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ChaKanActivity.this, AudioRecorderActivity.class);
+                startActivityForResult(intent,SOUND_RECODER);
+
             }
         });
 
@@ -305,7 +348,7 @@ public class ChaKanActivity extends AppCompatActivity {
                         hour_alarm = hourOfDay;
                         minute_alarm = minute;
                         isAlarm=1;
-                        Toast.makeText(ChaKanActivity.this,"时间保存闹钟自动设置",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChaKanActivity.this,"事件保存闹钟自动设置",Toast.LENGTH_SHORT).show();
                     }
                 },hour,minute,true);
                 timePickerDialog.show();
@@ -326,8 +369,15 @@ public class ChaKanActivity extends AppCompatActivity {
                     ShiJian shijian =new ShiJian();
                     shijian.setBiaoti(editTextBiaoTi.getText().toString());
                     shijian.setNeirong(editTextNeiRong.getText().toString());
+            //判断录音文件是否更改
+                    if(soundRecorderPath== null){
+                        shijian.setToDefault("soundRecorderPath");
 
-                 //   shijian.setPhoto(imagesByPhoto);
+                    }
+                    else {
+                        shijian.setSoundRecorderPath(soundRecorderPath);
+                    }
+             //判断图片文件是否更改
                     if(imagesByPhoto==null) {
 
                         shijian.setToDefault("photo");
@@ -335,6 +385,7 @@ public class ChaKanActivity extends AppCompatActivity {
                     else{
                         shijian.setPhoto(imagesByPhoto);
                     }
+
                     shijian.update(shiJian_id);
                     if(isAlarm==1)
                         addAlarm();
@@ -344,7 +395,19 @@ public class ChaKanActivity extends AppCompatActivity {
             }
         });
 
-//单击画板时的功能
+        //点击播放录音按钮
+        playSoundRecorder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //功能
+                File soundFile = new File(soundRecorderPath);
+                MediaPlayer mediaPlayer =  MediaPlayer.create(ChaKanActivity.this,Uri.parse(soundFile.getAbsolutePath()));
+                mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(0.5f));
+                mediaPlayer.start();
+            }
+        });
+
+      //单击画板时的功能
         drawBoard.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -376,12 +439,17 @@ public class ChaKanActivity extends AppCompatActivity {
         editTextNeiRong.setText(shijian.getNeirong());        //输出获得的内容
         addCream=(ImageButton)findViewById(R.id.addCameraInChaKanLayout);          //获取活动里的相机控件
        drawBoard = (ImageButton)findViewById(R.id.drawInChaKanLayout);    //获取画板控件
+        playSoundRecorder = (Button)findViewById(R.id.soundRecoderInChaKanLayout);  //获取播放录音控件
         //从数据库里获取图片
         if(shijian.getPhoto()!=null)
         {
             Log.d(TAG, "不为空");
             editTextPhoto.setImageBitmap(shijian.getPhoto());
           imagesByPhoto = img(shijian.getPhoto());
+        }
+        if(shijian.getSoundRecorderPath()!=null){
+            playSoundRecorder.setVisibility(View.VISIBLE);
+            soundRecorderPath = shijian.getSoundRecorderPath();
         }
         dbHelper=new MyDatabaseHelper(this,"ShiJian.db",null,1);  //创建事件数据库
     }
@@ -402,6 +470,7 @@ public class ChaKanActivity extends AppCompatActivity {
         Intent alarmIntent =new Intent("finmins.example.FinMins.broadcasttest.MY_BROADCAST");
         //根据id创建延迟活动
         PendingIntent alarmPendingIntent= PendingIntent.getBroadcast(ChaKanActivity.this,shiJian_id,alarmIntent,0);
+        Log.d(TAG, "事件ID是"+shiJian_id);
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY,hour_alarm);//设置闹钟小时数
         c.set(Calendar.MINUTE,minute_alarm);//设置闹钟的分钟数.

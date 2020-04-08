@@ -13,10 +13,12 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -49,9 +51,8 @@ public class InsertActivity extends AppCompatActivity {
     private static  final  String TAG ="InsertAcitvity.this";
     public static  final int TAKE_PHOTO = 1;
     public static final  int  CHOOSE_PHOTO = 2;
-    public static final  int DRAW_PHOTO = 3 ;
-    public static  final  int SOUNDRECODER = 4 ;
-    public static final int ISVISIBILITY = 0 ;
+    public static final  int DRAW_PHOTO= 3 ;
+    public static final int SOUND_RECODER = 4;
     private  ImageButton addAlarmClock;    //添加闹钟按钮
     private ImageButton addAlbum;   // 从相册添加图片按钮
     private ImageButton addSoundRecoding;    //添加录音按钮
@@ -69,7 +70,10 @@ public class InsertActivity extends AppCompatActivity {
     private Bitmap bitmap;      //图片的bitmap转化
     private ImageButton drawBoard;    //画板控件
     private byte[] images = new byte[1024];    //图片的二进制转化
+    private Uri soundUri ;           //录音的路径
     private Button playSoundRecoder ;     //播放录音按钮
+    private String soundString ;
+    private String soundName;     //录音名字加后缀
 
     /**接受自己输入的图片并展示
      * 调节图片大小
@@ -85,7 +89,7 @@ public class InsertActivity extends AppCompatActivity {
                         //将拍摄的照片显示出来
                         Bitmap bitmap1 = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
                      //   Log.d(TAG,"摄像里是"+imageUri.toString());
-                        bitmap = setBitmap(bitmap1,0.277f,90f);
+                        bitmap = setBitmap(bitmap1,0.277f,0);
                         images=img(bitmap);
                         //将图片展示出来
                         editTextPhoto.setImageBitmap(bitmap);
@@ -112,19 +116,25 @@ public class InsertActivity extends AppCompatActivity {
                     imageUri =Uri.parse(data.getStringExtra("ImageUriPath"));
                     try{
                         Bitmap bitmap1 =  BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                        bitmap = setBitmap(bitmap1,0.277f,90f);
+                        bitmap = setBitmap(bitmap1,0.577f,0);
                         images=img(bitmap);
                         //将图片展示出来
                         editTextPhoto.setImageBitmap(bitmap);
                     }catch (FileNotFoundException e){
                         e.printStackTrace();
                     }
-                  //  Log.d(TAG,"插入里的是"+data.getStringExtra("ImageUriPath"));
-             //     Bitmap bitmap =  BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
                 }
                 break;
-            case  SOUNDRECODER:
 
+            case SOUND_RECODER:
+                if(resultCode == RESULT_OK){
+                    soundString = data.getStringExtra("soundRecorderUriPath");    //获取从录音活动传回来的路径
+                    soundName = data.getStringExtra("soundName");
+                     Log.d(TAG,"插入路径是"+soundString);
+
+                       playSoundRecoder.setVisibility(View.VISIBLE);     //设置播放录音按钮可见
+                }
+               break;
             default:
                 break;
 
@@ -203,11 +213,11 @@ public class InsertActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
-
 
         initSet();   //初始化事件
         dbHelper=new MyDatabaseHelper(this,"ShiJian.db",null,1);  //创建事件数据库
@@ -230,7 +240,7 @@ public class InsertActivity extends AppCompatActivity {
                         minute_alarm = minute;
                         //设置事件有闹钟
                         isAlarm=1;
-                        Toast.makeText(InsertActivity.this,"时间保存闹钟自动设置",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InsertActivity.this,"事件保存闹钟自动设置",Toast.LENGTH_SHORT).show();
                     }
                 },hour,minute,true);
                 timePickerDialog.show();
@@ -243,10 +253,41 @@ public class InsertActivity extends AppCompatActivity {
         addSoundRecoding.setOnClickListener(new  View.OnClickListener(){
             public void onClick(View v){
               //录音代码
-
+            Intent intent = new Intent(InsertActivity.this, AudioRecorderActivity.class);
+            startActivityForResult(intent,SOUND_RECODER);
             }
         });
 
+
+        //点击播放录音按钮
+        playSoundRecoder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File soundFile = new File(soundString);
+                if (soundFile.exists()) {
+                   MediaPlayer mediaPlayer =  MediaPlayer.create(InsertActivity.this,Uri.parse(soundFile.getAbsolutePath()));
+                    //调播放速度。
+           //         mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(0.5f));
+                    mediaPlayer.start();
+
+              //      if (Build.VERSION.SDK_INT>=24){
+             //           soundUri = FileProvider.getUriForFile(InsertActivity.this,"com.example.finmins.MaterialTest.fileprovider",soundFile);
+             //       }else {
+               //         soundUri = Uri.fromFile(soundFile);
+             //       }
+                 //   Log.d(TAG,"Uri是"+soundUri.toString());
+             //       Intent playIntent = new Intent(Intent.ACTION_VIEW);
+            //        playIntent.setDataAndType(soundUri,"audio/ x-wav");
+               //     startActivity(playIntent);
+                }else {
+
+                }
+                File soundFileByName = new File(getExternalCacheDir(),soundName);
+                if (soundFile.exists()) {
+
+                }
+            }
+        });
 
 
 
@@ -265,6 +306,32 @@ public class InsertActivity extends AppCompatActivity {
                     openAlbum();
                 }
 
+            }
+        });
+
+        //录音长按删除功能
+        playSoundRecoder.setOnLongClickListener(new View.OnLongClickListener(){
+
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder dialog= new AlertDialog.Builder(InsertActivity.this);
+                dialog.setTitle("通知");
+                dialog.setMessage("是否删除录音？");
+                dialog.setCancelable(false);
+                dialog.setPositiveButton("是",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        soundString =null;
+                       playSoundRecoder.setVisibility(View.GONE);
+                    }
+                });
+                //点击否不做任何修改
+                dialog.setNegativeButton("否",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                dialog.show();
+                return true;
             }
         });
 
@@ -331,15 +398,7 @@ public class InsertActivity extends AppCompatActivity {
                 startActivityForResult(intent,DRAW_PHOTO);
             } });
 
-      //点击播放录音按钮
-        playSoundRecoder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //功能
 
-
-            }
-        });
 
 
         //单击添加按钮时的功能
@@ -361,20 +420,22 @@ public class InsertActivity extends AppCompatActivity {
                             String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) )+"分"+
                             String.valueOf(Calendar.getInstance().get(Calendar.SECOND))+"秒");
                     shijian.setImgId(0);
+                    if(soundString != null){
+                     shijian.setSoundRecorderPath(soundString);
+                        Log.d(TAG,"添加了"+soundString);
+                    }
                     if(images!=null){
-
                         shijian.setPhoto(images);
                     }
                    if( shijian.save()){
-                       Log.d("InsertActivity,this","save成功");
+                       Toast.makeText(InsertActivity.this,"事件添加成功！",Toast.LENGTH_SHORT).show();
+                       if(isAlarm==1)
+                           addAlarm();
                    }
                     else {
-                       Log.d("InsertActivity,this","save失败");
+                       Toast.makeText(InsertActivity.this,"事件添加失败",Toast.LENGTH_SHORT).show();
                    }
                     shiJian_id =shijian.getId();
-                    if(isAlarm==1)
-                        addAlarm();
-                    Toast.makeText(InsertActivity.this,"事件添加成功！，id为"+String.valueOf(shiJian_id)+"标题为"+shijian .getBiaoti(),Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -394,10 +455,6 @@ public class InsertActivity extends AppCompatActivity {
         editTextPhoto=(ImageView) findViewById(R.id.editTextPhotoInInsertLayout);        //获取文本款中图片控件
         drawBoard =(ImageButton)findViewById(R.id.drawInInsertLayout);     //获取画板控件
         playSoundRecoder = (Button)findViewById(R.id.soundRecoderInInsertLayout);   //获取播放按钮.
-        //每次进来 前先判断是否打开按钮，默认没有，然后改了个值就有
-        if(ISVISIBILITY == 1){
-            playSoundRecoder.setVisibility( View.VISIBLE);
-        }
     }
 
 
@@ -413,7 +470,7 @@ public class InsertActivity extends AppCompatActivity {
     //添加闹钟
     private void addAlarm(){
         AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        ;      Intent alarmIntent =new Intent("finmins.example.FinMins.broadcasttest.MY_BROADCAST");
+             Intent alarmIntent =new Intent("finmins.example.FinMins.broadcasttest.MY_BROADCAST");
         PendingIntent alarmPendingIntent= PendingIntent.getBroadcast(InsertActivity.this,shiJian_id,alarmIntent,0);
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY,hour_alarm);//设置闹钟小时数

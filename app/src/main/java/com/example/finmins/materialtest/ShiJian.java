@@ -21,7 +21,7 @@ public class ShiJian extends DataSupport {
     private int day;
     private int id;
     private byte[] photo;
-
+    private String soundRecorderPath;
 
 
 
@@ -42,6 +42,10 @@ public class ShiJian extends DataSupport {
     public void setId(int id){
 
         this.id=id;
+    }
+    //设置录音路径
+    public void setSoundRecorderPath(String soundRecorderPath){
+        this.soundRecorderPath=soundRecorderPath;
     }
 //设置天
     public void setDay(int day){
@@ -97,7 +101,10 @@ public class ShiJian extends DataSupport {
     //获取月份
     public int getMonth()
     {return month;}
-
+   //获取录音路径
+    public String getSoundRecorderPath(){
+       return soundRecorderPath;
+    }
 
     //获取天
     public int getDay()

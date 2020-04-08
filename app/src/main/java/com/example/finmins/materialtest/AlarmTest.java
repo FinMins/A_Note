@@ -22,7 +22,7 @@ public class AlarmTest extends BroadcastReceiver {
       Log.d("context","log运行了");
         AlertDialog alert =new AlertDialog.Builder(context).create();
         alert.setTitle("这是测试");     //设置对话框的标题
-        alert.setMessage("我太难了。。。");    //设置对话框的内容
+        alert.setMessage("这是测试！！");    //设置对话框的内容
         alert.show();
 
         throw new UnsupportedOperationException("Not yet implemented");

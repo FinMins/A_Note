@@ -34,7 +34,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
         AlertDialog alert =new AlertDialog.Builder(context).create();
         alert.setTitle("这是测试");     //设置对话框的标题
-        alert.setMessage("我太难了。。。");    //设置对话框的内容
+        alert.setMessage("注意啦！注意啦！");    //设置对话框的内容
 
         //添加确定按钮
         alert.setButton(DialogInterface.BUTTON_POSITIVE,"确定",new DialogInterface.OnClickListener(){

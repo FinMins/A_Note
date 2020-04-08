@@ -225,8 +225,8 @@ public class DrawingBoard extends View {
         mBufferCanvas.save(Canvas.ALL_SAVE_FLAG);
         mBufferCanvas.restore();
         // 保存到sdcard根目录下
-         file = new File(Environment.getExternalStorageDirectory().getPath() + "/"+str+".png");
-        imageUri =   FileProvider.getUriForFile(context,"com.example.finmins.MaterialTest.fileprovider",file);
+         file = new File(context.getExternalCacheDir() ,str+".png");
+         imageUri =   FileProvider.getUriForFile(context,"com.example.finmins.MaterialTest.fileprovider",file);
        // File file = new File(Environment.getExternalStorageDirectory().getPath() + "/"+str+".png");
         if(file.exists()){
             file.delete();

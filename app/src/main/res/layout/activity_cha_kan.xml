@@ -118,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_corner"
-                android:hint="请输入事件内容    （ps:上面两个图标是可以点的，只是还没写活动）                                                "
+                android:hint="请输入事件内容 "
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:paddingLeft="10dip"
@@ -130,7 +130,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 />
-
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/soundRecoderInChaKanLayout"
+                android:text="播放录音"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <!--

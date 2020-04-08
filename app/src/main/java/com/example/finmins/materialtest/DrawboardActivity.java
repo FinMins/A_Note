@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 public class DrawboardActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DrawingBoard mDrawingBoard;
@@ -30,16 +32,9 @@ public class DrawboardActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawbroad);
         final EditText et = new EditText(DrawboardActivity.this);
-        new AlertDialog.Builder(DrawboardActivity.this).setTitle("请输入备注")
-                .setIcon(android.R.drawable.sym_def_app_icon)
-                .setView(et)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //按下确定键后的事件
-                        name = et.getText().toString();
-                    }
-                }).setNegativeButton("取消", null).show();
+        name =String.valueOf( Calendar.getInstance().get(Calendar.DAY_OF_MONTH))+String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) +
+                String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) )+
+                String.valueOf(Calendar.getInstance().get(Calendar.SECOND));
         initView();
         initEvent();
 
