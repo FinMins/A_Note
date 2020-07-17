@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FinanceActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="-16dp">
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="60dp"
+            android:text="本月消费："
+            android:textSize="20dp"
+            android:textAlignment="center"/>
+        <Button
+            android:id="@+id/history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/total"
+            android:layout_marginLeft="60dp"
+            android:layout_toRightOf="@+id/total"
+            android:text="历史账单"
+            android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/addDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/total"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="点击选择日期"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/conmoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/addDate"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="20dp"
+            android:text="消费金额："
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/money"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/conmoney"
+            android:layout_marginTop="-7.0dip"
+            android:layout_toRightOf="@+id/conmoney"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:id="@+id/contype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/conmoney"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="50dp"
+            android:text="消费类型："
+            android:textSize="20dp" />
+
+        <Spinner
+            android:id="@+id/type"
+            android:layout_width="150.0dip"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/contype"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_toRightOf="@+id/contype"
+            android:layout_alignRight="@+id/money"
+            android:entries="@array/type"/>
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/contype"
+            android:layout_alignLeft="@+id/contype"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="提交账单"
+            android:background="@drawable/button_shape" />
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/type"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_toRightOf="@+id/addButton"
+            android:layout_marginLeft="75dp"
+            android:layout_alignRight="@+id/type"
+            android:layout_alignBaseline="@+id/addButton"
+            android:text="取消账单"
+            android:background="@drawable/button_shape" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

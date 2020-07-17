@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/group_nav"
+    app:startDestination="@id/group_host">
+    <fragment
+        android:id="@+id/group_host"
+        android:name="com.example.finmins.materialtest.GroupHostFragment"
+        android:label="群组"
+        tools:layout="@layout/fragment_group_host" >
+        <action
+            android:id="@+id/action_group_host_to_group_inner"
+            app:destination="@id/group_inner" />
+    </fragment>
+    <fragment
+        android:id="@+id/group_inner"
+        android:name="com.example.finmins.materialtest.GroupInnerFragment"
+        android:label="创建群"
+        tools:layout="@layout/fragment_group_inner" />
+    <fragment
+        android:id="@+id/group_set"
+        android:name="com.example.finmins.materialtest.GroupSetFragment"
+        android:label="创建群"
+        tools:layout="@layout/fragment_group_set" />
+</navigation>

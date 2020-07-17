@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/friendnav"
+    app:startDestination="@id/friendnav">
+    <fragment
+        android:id="@+id/friendnav"
+        android:name="com.example.finmins.materialtest.friendHostFragment"
+        android:label="fragment_friend_host"
+        tools:layout="@layout/fragment_friend_host" >
+        <action
+            android:id="@+id/action_friendnav_to_friendShareFragment"
+            app:destination="@id/friendShareFragment" />
+        <action
+            android:id="@+id/action_friendnav_to_friendAddFragment2"
+            app:destination="@id/friendAddFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/friendShareFragment"
+        android:name="com.example.finmins.materialtest.FriendShareFragment"
+        android:label="fragment_friend_share"
+        tools:layout="@layout/fragment_friend_share" />
+    <fragment
+        android:id="@+id/friendAddFragment2"
+        android:name="com.example.finmins.materialtest.FriendAddFragment"
+        android:label="fragment_friend_add"
+        tools:layout="@layout/fragment_friend_add" />
+</navigation>

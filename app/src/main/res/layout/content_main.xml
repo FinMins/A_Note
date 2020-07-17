@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="25dp"
+    android:layout_marginBottom="75dp"
+    android:layout_marginRight="25dp"
+    android:layout_marginTop="50dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:color="#50a5f5"
+    android:background="@drawable/shape_corner"
+    >
+   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+       android:id="@+id/swipeRefreshLayout"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       >
+
+
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/recycler_view"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       />
+   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+   <com.google.android.material.floatingactionbutton.FloatingActionButton
+       android:id="@+id/float_main"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_gravity="bottom|end"
+       android:src="@drawable/jiahao"
+       android:color="#5fc9ff"
+       android:layout_marginBottom="50px"
+       android:paddingLeft="50px"/>
+
+
+</FrameLayout>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/insert_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#fff"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        >
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <!--
+        <ImageButton
+            android:id="@+id/isChangedShiJianInInsertLayout"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/dui"
+            android:scaleType="fitXY"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@color/colorPrimary"
+            />
+        -->
+        <ImageButton
+            android:id="@+id/addCameraInInsertLayout"
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@mipmap/xiangji"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            />
+        <ImageButton
+            android:id="@+id/drawInInsertLayout"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@mipmap/draw"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            />
+
+        <ImageButton
+            android:id="@+id/addAlbumInInsertLayout"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@mipmap/xiangce"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            />
+        <ImageButton
+            android:id="@+id/addAlarmClockInInsertLayout"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+
+            app:srcCompat="@mipmap/shizhong"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"/>
+
+        <ImageButton
+            android:id="@+id/addSoundRecordingInInsertLayout"
+            android:layout_marginLeft="9dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@mipmap/yuyin"
+            android:scaleType="fitXY"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/colorPrimary"
+            />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/editTextBiaotiInInsertLayout"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:background="@drawable/shape_corner"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:hint="请输入事件标题"
+        android:paddingBottom="12dip"
+        android:gravity="center"
+        />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/shape_corner"
+            >
+            <EditText
+                android:maxLines="4"
+                android:gravity="top"
+                android:id="@+id/editTextNeirongInInsertLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_corner"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:hint="请输入事件内容    "
+                android:paddingLeft="10dip"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/soundRecoderInInsertLayout"
+                android:text="播放录音"
+                android:visibility="gone"/>
+            <ImageView
+                android:layout_marginTop="10dp"
+                android:id="@+id/editTextPhotoInInsertLayout"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                />
+
+        </LinearLayout>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addShiJianFloatInInsert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:src="@drawable/jiahao"
+            android:color="@color/colorPrimary"
+            android:layout_marginBottom="50px"
+            android:paddingLeft="50px"/>
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

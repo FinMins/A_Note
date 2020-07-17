@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fff"
+    >
+
+<group android:checkableBehavior="single">
+
+    <item
+        android:id="@+id/nav_mainShiJian"
+        android:icon="@drawable/renyuan"
+        android:title="事件"
+        />
+    <item
+            android:icon="@drawable/renyuan"
+            android:id="@+id/nav_friends"
+            android:title="我的好友"/>
+    <item
+            android:icon="@drawable/xinxi"
+            android:id="@+id/nav_group"
+            android:title="我的群组"/>
+    <item
+            android:icon="@drawable/naozhong"
+            android:id="@+id/nav_userdata"
+            android:title="修改资料"/>
+    <item
+        android:icon="@drawable/naozhong"
+        android:id="@+id/nav_bill"
+        android:title="我的账单"/>
+
+</group>
+
+</menu>

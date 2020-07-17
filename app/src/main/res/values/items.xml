@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="type">
+    <item>生活支出</item>
+    <item>娱乐消费</item>
+    <item>学业支出</item>
+    <item>交通费用</item>
+    <item>其他支出</item>
+</string-array>
+</resources>
