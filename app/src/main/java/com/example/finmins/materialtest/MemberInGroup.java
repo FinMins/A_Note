@@ -9,10 +9,11 @@ public class MemberInGroup {
     private String finishedYear;    //成员完成年份;
     private String finishedMonth;   //成员完成月份
     private  String finishedDay;    //成员能完成填
+    private int isSelf ; //是否是自己
 
 
-    //构造函数
-    public  MemberInGroup(int imgid,String name ,int mannerIsFinished,int mannerIsVip,String finishedYear,String finishedMonth,String finishedDay){
+    //构造函数（id,名字,是否完成,是否是自己,是否是管理员,完成年，完成月，完成天）
+    public  MemberInGroup(int imgid,int isSelf,String name ,int mannerIsFinished,int mannerIsVip,String finishedYear,String finishedMonth,String finishedDay){
         this.mannerIsVip=mannerIsVip;
         this.mannerName=name;
         this.mannerIsFinished=mannerIsFinished;
@@ -20,7 +21,10 @@ public class MemberInGroup {
         this.finishedMonth=finishedMonth;
         this.finishedDay=finishedDay;
         this.mannerImgId=imgid;
+        this.isSelf = isSelf;
     }
+    //设置是否是自己
+    public void setIsSelf(int isSelf){this.isSelf = isSelf;};
     //设置成员id
     public void setMannerId(int id ){
         this.id = id ;
@@ -89,7 +93,8 @@ public class MemberInGroup {
     public String getFinishedDay( ){
         return this.finishedDay;
     }
-
+    //返回是否是自己
+    public int getIsSelf(){ return  this.isSelf;};
 
 }
 

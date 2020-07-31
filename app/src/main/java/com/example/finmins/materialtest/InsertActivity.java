@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,6 +47,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.example.finmins.materialtest.Model.MainViewModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -87,7 +89,7 @@ public class InsertActivity extends AppCompatActivity {
     private Button playSoundRecoder ;     //播放录音按钮
     private String soundString ;
     private String soundName;     //录音名字加后缀
-
+    private MainViewModel mainViewModel ; //主model
     /**接受自己输入的图片并展示
      * 调节图片大小
      * 调节图片的显示效果
@@ -529,12 +531,12 @@ public class InsertActivity extends AppCompatActivity {
             StringBuilder currentPostion = new StringBuilder();
          if(location.getStreet()!=null  && location.getCity()!=null) {
              Toast.makeText(InsertActivity.this,"获取成功",Toast.LENGTH_SHORT).show();
-             streetNmae = location.getStreet();
-             city = location.getCity();
+             streetNmae = String.valueOf(location.getLatitude());
+             city = String.valueOf(location.getLongitude());
          }else {
              Toast.makeText(InsertActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
-             city = (location.getLatitude())+"";
-             streetNmae = (location.getLongitude())+"";
+             streetNmae = String.valueOf(location.getLatitude())+"";
+             city = String.valueOf(location.getLongitude())+"";
          }
             /*
           currentPostion.append("维度：").append(location.getLatitude()).append("\n");
@@ -568,6 +570,7 @@ public class InsertActivity extends AppCompatActivity {
         editTextPhoto=(ImageView) findViewById(R.id.editTextPhotoInInsertLayout);        //获取文本款中图片控件
         drawBoard =(ImageButton)findViewById(R.id.drawInInsertLayout);     //获取画板控件
         playSoundRecoder = (Button)findViewById(R.id.soundRecoderInInsertLayout);   //获取播放按钮.
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
     }
 
 

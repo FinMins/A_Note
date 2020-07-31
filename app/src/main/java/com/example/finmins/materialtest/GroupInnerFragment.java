@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.finmins.materialtest.Model.GroupViewModel;
 import com.example.finmins.materialtest.R;
 
 import java.lang.reflect.Member;
@@ -30,6 +31,7 @@ public class GroupInnerFragment extends Fragment {
     private List<MemberInGroup> memberList = new ArrayList<>();   //成员容器
     private  MemberAdapter adapter;    //成员适配器
     private LinearLayoutManager linearLayoutManager;   //item线性布局
+    private GroupViewModel   groupViewModel ; //群model
 
     public GroupInnerFragment() {
         // Required empty public constructor

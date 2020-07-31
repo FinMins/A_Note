@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.finmins.materialtest.Model.GroupViewModel;
 import com.example.finmins.materialtest.R;
 
 
@@ -29,7 +32,7 @@ public class GroupHostFragment extends Fragment {
     private View view;    //当前界面
     private List<Group> groupList = new ArrayList<>();   //群容器
     private  GroupAdapter adapter;    //朋友主界面适配器
-
+    private GroupViewModel groupViewModel;    //群数据
     private LinearLayoutManager linearLayoutManager;   //item线性布局
 
     public GroupHostFragment() {
@@ -79,5 +82,6 @@ public class GroupHostFragment extends Fragment {
         adapter = new GroupAdapter(getActivity(),groupList);
         recyclerView = view.findViewById(R.id.groupRecycler);
         linearLayoutManager = new LinearLayoutManager(getActivity());
+        groupViewModel  = new ViewModelProvider(this).get(GroupViewModel.class);
     }
 }

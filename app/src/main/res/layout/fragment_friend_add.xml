@@ -22,10 +22,10 @@
         android:text="搜索"
         android:textColor="#fff"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/searchGroupText"
+        app:layout_constraintBottom_toBottomOf="@+id/searchGroupEdit"
         app:layout_constraintEnd_toStartOf="@+id/guideline48"
         app:layout_constraintStart_toStartOf="@+id/guideline47"
-        app:layout_constraintTop_toTopOf="@+id/searchGroupText"
+        app:layout_constraintTop_toTopOf="@+id/searchGroupEdit"
         app:layout_constraintVertical_bias="1.0" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -43,7 +43,7 @@
         app:layout_constraintGuide_percent="0.12" />
 
     <EditText
-        android:id="@+id/searchGroupText"
+        android:id="@+id/searchGroupEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -79,7 +79,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView7"
+        android:id="@+id/searchFriendImg"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:src="@drawable/addfriendtouxiang"

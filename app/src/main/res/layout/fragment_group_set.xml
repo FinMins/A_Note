@@ -8,7 +8,7 @@
     tools:context=".groupFragment.GroupSetFragment">
 
     <ImageButton
-        android:id="@+id/addInSearch3"
+        android:id="@+id/addGroupButton"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="#fff"
@@ -54,11 +54,11 @@
         android:background="@color/colorBackground"
         android:backgroundTint="@color/colorBackground"
         android:text="创建群"
-        app:layout_constraintBottom_toBottomOf="@+id/creatGroupNameText"
-        app:layout_constraintEnd_toStartOf="@+id/creatGroupNumText"
+        app:layout_constraintBottom_toBottomOf="@+id/creatGroupNameEdit"
+        app:layout_constraintEnd_toStartOf="@+id/creatGroupNumEdit"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
-        app:layout_constraintTop_toTopOf="@+id/creatGroupNumText" />
+        app:layout_constraintTop_toTopOf="@+id/creatGroupNumEdit" />
 
     <Button
         android:id="@+id/searchGroupButton"
@@ -66,14 +66,14 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorBackground"
         android:text="搜索群"
-        app:layout_constraintBottom_toBottomOf="@+id/searchGroupText"
+        app:layout_constraintBottom_toBottomOf="@+id/searchGroupEdit"
         app:layout_constraintEnd_toStartOf="@+id/editText"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
-        app:layout_constraintTop_toTopOf="@+id/searchGroupText"
+        app:layout_constraintTop_toTopOf="@+id/searchGroupEdit"
         app:layout_constraintVertical_bias="1.0" />
 
     <EditText
-        android:id="@+id/searchGroupText"
+        android:id="@+id/searchGroupEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -86,7 +86,7 @@
         app:layout_constraintVertical_bias="0.276" />
 
     <EditText
-        android:id="@+id/creatGroupNumText"
+        android:id="@+id/creatGroupNumEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -105,7 +105,7 @@
         app:layout_constraintGuide_percent="0.13" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/searchGroupImg"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline56"
@@ -175,16 +175,16 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <EditText
-        android:id="@+id/creatGroupNameText"
+        android:id="@+id/creatGroupNameEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="请输入群名"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/guideline62"
-        app:layout_constraintEnd_toEndOf="@+id/creatGroupNumText"
-        app:layout_constraintStart_toStartOf="@+id/creatGroupNumText"
-        app:layout_constraintTop_toBottomOf="@+id/creatGroupNumText" />
+        app:layout_constraintEnd_toEndOf="@+id/creatGroupNumEdit"
+        app:layout_constraintStart_toStartOf="@+id/creatGroupNumEdit"
+        app:layout_constraintTop_toBottomOf="@+id/creatGroupNumEdit" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline62"

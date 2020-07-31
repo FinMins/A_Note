@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daimajia.swipe.SwipeLayout;
 
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+import com.example.finmins.materialtest.Model.GroupViewModel;
 
 import org.w3c.dom.Text;
 
@@ -28,10 +29,12 @@ import java.util.List;
 public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter. ViewHolder> {
     private List<MemberInGroup> mMember;
     private Context myContext;
+    private GroupViewModel groupViewModel;
 
-    public MemberAdapter(Context context, List<MemberInGroup> memberlist) {
+    public MemberAdapter(Context context, List<MemberInGroup> memberlist, GroupViewModel groupViewModel) {
         mMember = memberlist ;
         myContext = context;
+        this.groupViewModel = groupViewModel;
     }
 
     @Override
@@ -64,6 +67,7 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter. ViewHolde
         TextView finishedDay ; //点击完成的日
        // LinearLayout listItemLayout;    不知道干嘛用的
         TextView finish;    //是否完成按钮
+
         public  ViewHolder(View view) {
             super(view);
 
@@ -87,7 +91,8 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter. ViewHolde
         if(viewHolder instanceof  ViewHolder) {
             final MemberInGroup member = mMember.get(position);
             final int id =member.getId();    //得到ID
-            final int isVip = member.getMannerIsVip();  //查看是否为VIP
+             final int isVip = member.getMannerIsVip();  //查看是否为VIP
+            final int isSelf = member.getIsSelf();
             final ViewHolder itemViewHold = ((ViewHolder) viewHolder);
             itemViewHold.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
             if (mOnItemClickLitener != null) {
@@ -100,15 +105,24 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter. ViewHolde
                     }
                 });
 
+
+                //删除按钮
                 itemViewHold.delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         itemViewHold.swipeLayout.close();
                         int position = itemViewHold.getLayoutPosition();
                         mOnItemClickLitener.onDeleteClick(position,id);
+                        //是管理员
+                        if((isVip == 1) || (isSelf == 1)){
+
+                        }
+                         else {
+                            Toast.makeText(myContext, "没权限删除其他人", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
-                //
+                //完成按钮
                 itemViewHold.finish.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {

@@ -28,8 +28,12 @@ public class Group {
     public String getGroupName(){
         return this.groupName;
     }
-
+    //返回群ID
     public  int getId(){
         return this.id;
     }
+
+
+
+
 }

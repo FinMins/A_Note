@@ -53,6 +53,10 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
    private MainViewModel mainViewModel;
 
+    private  static  final  Integer NO_LOGINED = 0   ;//未登录
+
+    private  static  final  Integer IS_LOGINED = 1   ;//已登录
+
     private DrawerLayout mDrawerLayout;   //侧滑栏
 
     private SwipeRefreshLayout swipeRefreshLayout ;   //删除完成侧滑
@@ -78,10 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     //将数据库的数据读取到listView中
     private void initShijian(){
-        List<ShiJian>  shijians = DataSupport.findAll(ShiJian.class);
-        for(ShiJian shijian:shijians){
-            shiJianList.add(shijian);
-           }
+        shiJianList= mainViewModel.getShiJian().getValue();
     }
 
   //覆写重新加载函数
@@ -196,7 +197,12 @@ public class MainActivity extends AppCompatActivity {
 
                 mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
                 navigationView= findViewById(R.id.nav_view);
+                mainViewModel.getUserEmail().observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
 
+                    }
+                });
                 user_Mail = navigationView.getHeaderView(0).findViewById(R.id.user_mail);
                 userXingming = navigationView.getHeaderView(0).findViewById(R.id.user_mail);
                 touxiang = navigationView.getHeaderView(0).findViewById(R.id.user_image);
@@ -204,23 +210,54 @@ public class MainActivity extends AppCompatActivity {
                 touxiang.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                   if(mainViewModel.getIsLogined()==0){
+                   if(mainViewModel.getIsLogined().getValue()==0){
                        Intent loginIntent = new Intent(MainActivity.this,LoginActivity.class);
                        startActivity(loginIntent);
                    }
-                   if(mainViewModel.getIsLogined() == 1){
+                   if(mainViewModel.getIsLogined().getValue() == 1){
                        //进入用户登录后的界面
+
                    }
                     }
                 });
+;
 
-                //触发界面用户邮箱的修改
-                mainViewModel.getUserEmail().observe(this, new Observer<String>() {
-                    @Override
-                    public void onChanged(String string) {
-                       user_Mail.setText(string);
-                    }
-                });
+            //头像长按退出
+        touxiang.setOnLongClickListener(new View.OnLongClickListener(){
+
+            public boolean onLongClick(View v) {
+                //没登录
+                if(mainViewModel.getIsLogined().getValue()==NO_LOGINED){
+                    Toast.makeText(MainActivity.this, "请登陆在尝试退出", Toast.LENGTH_SHORT).show();
+                }
+                //已登录
+                if(mainViewModel.getIsLogined().getValue()==IS_LOGINED) {
+
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                    dialog.setTitle("通知");
+                    dialog.setMessage("是否退出登录");
+                    dialog.setCancelable(false);
+                    dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                       //退出账号
+                            mainViewModel.setIsLogined(NO_LOGINED);
+                        }
+                    });
+
+                    //点击否不做任何修改
+                    dialog.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+                    dialog.show();
+                }
+                return true;
+
+            }
+        });
 
 
                 //下拉刷新
@@ -277,14 +314,29 @@ public class MainActivity extends AppCompatActivity {
                      {
                          case R.id.nav_friends:
                              //好友逻辑
-                             Intent friendIntent = new Intent(MainActivity.this,FriendsActivity.class);
-                             startActivity(friendIntent);
-                             break;
+                             if (mainViewModel.getIsLogined().getValue()==NO_LOGINED){
+                                 Toast.makeText(MainActivity.this, "请先登陆", Toast.LENGTH_SHORT).show();
+                                 break;
+                             }
+                             if(mainViewModel.getIsLogined().getValue()==IS_LOGINED) {
+                                 Intent friendIntent = new Intent(MainActivity.this, FriendsActivity.class);
+                                 //把viewmodel里的用户账号传输过去
+                                 friendIntent.putExtra("userNum",mainViewModel.getUserEmail().getValue());
+                                 startActivity(friendIntent);
+                                 break;
+                             }
                          case R.id.nav_group:
+                             if (mainViewModel.getIsLogined().getValue()==NO_LOGINED){
+                                 Toast.makeText(MainActivity.this, "请先登陆", Toast.LENGTH_SHORT).show();
+                                 break;
+                             }
+                             if(mainViewModel.getIsLogined().getValue()==IS_LOGINED) {
                             Intent groupIntent = new Intent(MainActivity.this,Groupctivity.class);
+                            groupIntent.putExtra("userNum",mainViewModel.getUserEmail().getValue());
                             startActivity(groupIntent);
                              //群组逻辑
-                             break;
+                                 break;
+                             }
                          case R.id.nav_userdata:
                              //修改资料
                              Intent changeInfor = new Intent(MainActivity.this,ChangeinformationActivity.class);
