@@ -63,7 +63,7 @@ public class GroupHostFragment extends Fragment {
     }
 
 
-    //初始化朋友容器，实际从数据库中读取。
+    //初始化群组容器，实际从数据库中读取。
     private void init(){
         for(int i = 0 ;i<10;i++){
 

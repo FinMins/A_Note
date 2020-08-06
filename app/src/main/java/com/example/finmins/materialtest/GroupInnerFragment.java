@@ -76,9 +76,9 @@ public class GroupInnerFragment extends Fragment {
     //初始化朋友容器，实际从数据库中读取。
     private void init(){
         for(int i = 0 ;i<10;i++){
-           MemberInGroup member = new MemberInGroup(R.mipmap.app,"123",1,0,"2020","7","13");
+           MemberInGroup member = new MemberInGroup(R.mipmap.app,0,"123",0,0,"7","13","23");
           memberList.add(member);
-            MemberInGroup member1 = new MemberInGroup(R.mipmap.app,"666",0,0,"2020","7","13");
+            MemberInGroup member1 = new MemberInGroup(R.mipmap.app,0,"123",0,0,"7","13","23");
             memberList.add(member1);
         }
     }
@@ -86,7 +86,7 @@ public class GroupInnerFragment extends Fragment {
 
 
     private void initControl(){
-        adapter = new MemberAdapter(getActivity(),memberList);
+        adapter = new MemberAdapter(getActivity(),memberList,groupViewModel);
         recyclerView = view.findViewById(R.id.memberRecyclerview);
         linearLayoutManager = new LinearLayoutManager(getActivity());
     }
