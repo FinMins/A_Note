@@ -210,7 +210,9 @@ public class MainActivity extends AppCompatActivity {
                 touxiang.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                   if(mainViewModel.getIsLogined().getValue()==0){
+
+
+                   if( mainViewModel.getIsLogined().getValue()==0){
                        Intent loginIntent = new Intent(MainActivity.this,LoginActivity.class);
                        startActivity(loginIntent);
                    }

@@ -21,7 +21,7 @@ public class Groupctivity extends AppCompatActivity {
         BottomNavigationView group  = findViewById(R.id.groupBottomNavigationView);
         NavController navController = Navigation.findNavController(this,R.id.groupfragment);
         AppBarConfiguration configuration = new AppBarConfiguration.Builder(group.getMenu()).build();
-        NavigationUI.setupActionBarWithNavController(this,navController,configuration);
+      //  NavigationUI.setupActionBarWithNavController(this,navController,configuration);
         NavigationUI.setupWithNavController(group,navController);
     }
 }

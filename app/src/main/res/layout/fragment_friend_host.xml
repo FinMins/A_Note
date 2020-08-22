@@ -61,7 +61,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline32"
         app:layout_constraintStart_toStartOf="@+id/guideline33"
         app:layout_constraintTop_toTopOf="@+id/guideline34"
-        app:srcCompat="@drawable/header" />
+        app:srcCompat="@drawable/friendbeijing" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline19"
