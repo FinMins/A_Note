@@ -26,9 +26,7 @@ public class FriendsActivity extends AppCompatActivity {
         friendViewModel = new ViewModelProvider(this).get(FriendViewModel.class);
         Intent intent =getIntent();
         String userNum = intent.getStringExtra("userNum");
-        friendViewModel.setUserNum(userNum);
-        Toast.makeText(this, userNum, Toast.LENGTH_SHORT).show();
-
+        friendViewModel.setUserEmail(userNum);
 
     }
 

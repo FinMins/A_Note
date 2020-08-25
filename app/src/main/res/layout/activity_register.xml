@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-27dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <TextView
+            android:id="@+id/RegisterName"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="100dp"
+            android:text="用&#8194;户&#8194;名："
+            android:textAlignment="center"
+            android:textSize="22dp" />
+
+        <EditText
+            android:id="@+id/registerName"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/RegisterName"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/RegisterName"
+            android:background="@color/white"
+            android:hint="请输入用户名"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/RegisterPasswd"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/RegisterName"
+            android:layout_alignStart="@+id/RegisterName"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="20dp"
+            android:text="输入密码："
+            android:textAlignment="center"
+            android:textSize="22dp" />
+
+        <EditText
+            android:id="@+id/regisPassword"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/RegisterPasswd"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/RegisterPasswd"
+            android:background="@color/white"
+            android:hint="请输入密码"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/ConfirmPasswd"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/RegisterPasswd"
+            android:layout_alignStart="@+id/RegisterPasswd"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="20dp"
+            android:text="确认密码："
+            android:textAlignment="center"
+            android:textSize="22dp" />
+
+        <EditText
+            android:id="@+id/registerPasswordAgain"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/ConfirmPasswd"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/ConfirmPasswd"
+            android:background="@color/white"
+            android:hint="请再次输入密码"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/RegisterEmail"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ConfirmPasswd"
+            android:layout_alignStart="@+id/RegisterName"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="20dp"
+            android:text="邮&#12288;&#12288;箱："
+            android:textAlignment="center"
+            android:textSize="22dp" />
+
+        <EditText
+            android:id="@+id/registEmail"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/RegisterEmail"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/RegisterEmail"
+            android:background="@color/white"
+            android:hint="请输入常用邮箱"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/ConfirmRegister"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/RegisterEmail"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="61dp"
+            android:layout_marginLeft="61dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/button_shape"
+            android:text="确认注册"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/CancelRegister"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/ConfirmRegister"
+            android:layout_alignTop="@+id/ConfirmRegister"
+            android:layout_alignBottom="@+id/ConfirmRegister"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toEndOf="@+id/ConfirmRegister"
+            android:layout_toRightOf="@+id/ConfirmRegister"
+            android:background="@drawable/button_shape"
+            android:text="取消注册"
+            android:textSize="20dp" />
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline64"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline65"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6101231" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,13 +5,14 @@
     android:id="@+id/group_set"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     tools:context=".groupFragment.GroupSetFragment">
 
     <ImageButton
         android:id="@+id/addGroupButton"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="#fff"
+        android:background="@android:color/transparent"
         android:scaleType="fitXY"
         android:src="@drawable/addfriendbut"
         app:layout_constraintBottom_toTopOf="@+id/guideline61"
@@ -55,10 +56,7 @@
         android:backgroundTint="@color/colorBackground"
         android:text="创建群"
         app:layout_constraintBottom_toBottomOf="@+id/creatGroupNameEdit"
-        app:layout_constraintEnd_toStartOf="@+id/creatGroupNumEdit"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline20"
-        app:layout_constraintTop_toTopOf="@+id/creatGroupNumEdit" />
+        app:layout_constraintStart_toStartOf="@+id/guideline20" />
 
     <Button
         android:id="@+id/searchGroupButton"
@@ -77,25 +75,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="请输入群号"
+        android:hint="请输入群名"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/searchGroupButton"
         app:layout_constraintTop_toTopOf="@+id/guideline13"
         app:layout_constraintVertical_bias="0.276" />
-
-    <EditText
-        android:id="@+id/creatGroupNumEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="请输入群号"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/guideline21"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline57"
-        app:layout_constraintTop_toTopOf="@+id/guideline15" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline20"
@@ -182,9 +168,7 @@
         android:hint="请输入群名"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/guideline62"
-        app:layout_constraintEnd_toEndOf="@+id/creatGroupNumEdit"
-        app:layout_constraintStart_toStartOf="@+id/creatGroupNumEdit"
-        app:layout_constraintTop_toBottomOf="@+id/creatGroupNumEdit" />
+        tools:layout_editor_absoluteX="171dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline62"

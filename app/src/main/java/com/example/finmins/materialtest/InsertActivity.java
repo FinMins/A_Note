@@ -42,6 +42,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -58,7 +62,10 @@ import java.util.Calendar;
 import java.util.List;
 
 public class InsertActivity extends AppCompatActivity {
-    public LocationClient mLocationClient ;
+//    public LocationClient mLocationClient ;
+public AMapLocationClient mLocationClient ;
+//public AMapLocationListener mLocationListener;
+
     private TextView positionText;
     private static  final  String TAG ="InsertAcitvity.this";
     private  static final int LOCATION= 2 ;    //位置返回
@@ -90,6 +97,11 @@ public class InsertActivity extends AppCompatActivity {
     private String soundString ;
     private String soundName;     //录音名字加后缀
     private MainViewModel mainViewModel ; //主model
+   private  AMapLocationClientOption mLocationClientOption    ;
+
+
+
+
     /**接受自己输入的图片并展示
      * 调节图片大小
      * 调节图片的显示效果
@@ -179,7 +191,8 @@ public class InsertActivity extends AppCompatActivity {
                             return ;
                         }
                     }
-                    requestLocation();
+                  requestLocation();
+//                    mLocationClient.startLocation();
                 }else{
                     Toast.makeText(this,"发生未知错误",Toast.LENGTH_SHORT).show();
                     finish();
@@ -250,9 +263,14 @@ public class InsertActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
+//百度
+//        mLocationClient = new LocationClient(getApplicationContext());
+//        mLocationClient.registerLocationListener(new MyLocationListener());
+//        高德
+        mLocationClient = new AMapLocationClient(getApplicationContext());
+        mLocationClient.setLocationListener(new MyAMapLocationListener() );
+//
 
-        mLocationClient = new LocationClient(getApplicationContext());
-        mLocationClient.registerLocationListener(new MyLocationListener());
         List<String> permissionList = new ArrayList<String>() ;
         if(ContextCompat.checkSelfPermission(InsertActivity.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -267,7 +285,8 @@ public class InsertActivity extends AppCompatActivity {
             String[] permissions = permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(InsertActivity.this,permissions,LOCATION );
         }else{
-            mLocationClient.start();
+//            mLocationClient.start();
+            mLocationClient.startLocation();
         }
 
 
@@ -506,40 +525,78 @@ public class InsertActivity extends AppCompatActivity {
 
     private void requestLocation(){
          initLocation() ;
-         mLocationClient.start();
+         mLocationClient.setLocationOption(mLocationClientOption);
+         mLocationClient.startLocation();
     }
     private void initLocation(){
-        LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);
-       // option.setScanSpan(5000);
-        option.setIsNeedAddress(true);
+//        LocationClientOption option = new LocationClientOption();
+//        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);
+//        option.setIsNeedAddress(true);
 
-        mLocationClient.setLocOption(option);
+        mLocationClientOption = new AMapLocationClientOption();
+        mLocationClientOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);   //高精度定位
+        mLocationClientOption.setOnceLocation(true);  //只定位一次
+        mLocationClientOption.setNeedAddress(true);   //返回定位地址
+
+//    场景定位    mLocationClientOption.setLocationPurpose()
+
+        // option.setScanSpan(5000);
+
+//        mLocationClient.setLocOption(option);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mLocationClient.stop();
+//        mLocationClient.stop();
     }
 
-    //内部类
-    public class MyLocationListener extends BDAbstractLocationListener {
+
+    public class MyAMapLocationListener implements  AMapLocationListener{
 
         @Override
-        public void onReceiveLocation(BDLocation location) {
-            StringBuilder currentPostion = new StringBuilder();
-         if(location.getStreet()!=null  && location.getCity()!=null) {
-             Toast.makeText(InsertActivity.this,"获取成功",Toast.LENGTH_SHORT).show();
-             streetNmae = String.valueOf(location.getLatitude());
-             city = String.valueOf(location.getLongitude());
-         }else {
-             Toast.makeText(InsertActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
-             streetNmae = String.valueOf(location.getLatitude())+"";
-             city = String.valueOf(location.getLongitude())+"";
-         }
-            /*
-          currentPostion.append("维度：").append(location.getLatitude()).append("\n");
+        public void onLocationChanged(AMapLocation aMapLocation) {
+            if (aMapLocation!= null) {
+                if (aMapLocation.getErrorCode() == 0) {
+//可在其中解析aMapLocation获取相应内容。
+                    Log.d(TAG, "进到赋值语句了。");
+                    streetNmae = aMapLocation.getFloor();
+                    city = aMapLocation.getAddress();
+
+
+                    mLocationClient.stopLocation();
+                }else {
+                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                    Log.e("AmapError","location Error, ErrCode:"
+                            + aMapLocation.getErrorCode() + ", errInfo:"
+                            + aMapLocation.getErrorInfo());
+                  mLocationClient.stopLocation();
+                }
+            }
+
+
+        }
+    }
+
+
+
+
+    //内部类
+//    public class MyLocationListener extends BDAbstractLocationListener {
+//
+//        @Override
+//        public void onReceiveLocation(BDLocation location) {
+//            StringBuilder currentPostion = new StringBuilder();
+//         if(location.getStreet()!=null  && location.getCity()!=null) {
+//             Toast.makeText(InsertActivity.this,"获取成功",Toast.LENGTH_SHORT).show();
+//             streetNmae = String.valueOf(location.getLatitude());
+//             city = String.valueOf(location.getLongitude());
+//         }else {
+//             Toast.makeText(InsertActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
+//             streetNmae = String.valueOf(location.getLatitude())+"";
+//             city = String.valueOf(location.getLongitude())+"";
+//         }
+            /*          currentPostion.append("维度：").append(location.getLatitude()).append("\n");
            currentPostion.append("经度：").append(location.getLongitude()).append("\n");
             currentPostion.append("国家：").append(location.getCountry()).append("\n");
             currentPostion.append("省：").append(location.getProvince()).append("\n");
@@ -554,8 +611,8 @@ public class InsertActivity extends AppCompatActivity {
                 currentPostion.append("网络");
             }*/
           //  Toast.makeText(InsertActivity.this,location.getLocationID()+","+location.getLatitude(),Toast.LENGTH_SHORT).show();
-        }
-    }
+//        }
+//    }
 
 
     //初始化控件
@@ -571,6 +628,32 @@ public class InsertActivity extends AppCompatActivity {
         drawBoard =(ImageButton)findViewById(R.id.drawInInsertLayout);     //获取画板控件
         playSoundRecoder = (Button)findViewById(R.id.soundRecoderInInsertLayout);   //获取播放按钮.
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+
+
+//
+//        mLocationListener = new AMapLocationListener() {
+//            @Override
+//            public void onLocationChanged(AMapLocation aMapLocation) {
+//                if (aMapLocation!= null) {
+//                    if (aMapLocation.getErrorCode() == 0) {
+////可在其中解析aMapLocation获取相应内容。
+//                        Log.d(TAG, "进到赋值语句了。");
+//                        streetNmae = aMapLocation.getStreet();
+//                        city = aMapLocation.getCity();
+//
+//
+//                        mLocationClient.stopLocation();
+//                    }else {
+//                        //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+//                        Log.e("AmapError","location Error, ErrCode:"
+//                                + aMapLocation.getErrorCode() + ", errInfo:"
+//                                + aMapLocation.getErrorInfo());
+//                      requestLocation();
+//                    }
+//                }
+//            }
+//        };
     }
 
 

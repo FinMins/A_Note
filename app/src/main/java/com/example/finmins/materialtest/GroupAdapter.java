@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finmins.materialtest.Group;
 import com.example.finmins.materialtest.MemberInGroup;
+import com.example.finmins.materialtest.Model.GroupViewModel;
 import com.example.finmins.materialtest.R;
 
 import java.util.List;
@@ -24,10 +25,12 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder>
 {
     private List<Group> mGroup;
     private Context context;
+    private GroupViewModel groupViewModel;
 
-    public  GroupAdapter(Context context, List<Group> group){
+    public  GroupAdapter(Context context, List<Group> group, GroupViewModel groupViewModel1){
         this.context=context;
         this.mGroup=group ;
+        this.groupViewModel = groupViewModel1;
     }
     static class  ViewHolder extends RecyclerView.ViewHolder{
         ImageView groupImg ;   //群头像
@@ -47,16 +50,17 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder>
         final ViewHolder holder = new ViewHolder(view);
 
 
-        //朋友item点击功能
+        //群组item点击功能
         holder.group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 Group group = mGroup.get(position+1);
                 Bundle bundle = new Bundle();
-                bundle.putInt("shareId",group.getId());
+                bundle.putString("groupName",group.getGroupName());
+                bundle.putString("VIPemail",group.getGroupVipEmail());
                 NavController Controller = Navigation.findNavController(v);
-                Controller.navigate(R.id.action_group_host_to_group_inner);
+                Controller.navigate(R.id.action_group_host_to_group_inner,bundle);
             }
         });
 

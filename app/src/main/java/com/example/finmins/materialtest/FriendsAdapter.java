@@ -33,6 +33,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
     private  List<Friend> allFriends ;
     private   Context context;
     private FriendViewModel friendViewModel ;
+    private HttpClientUtils httpClientUtils = new HttpClientUtils();
    // private List<ShiJian> shiJianList; //接收的事件
 
     public  FriendsAdapter(Context context, List<Friend> friends,FriendViewModel viewmodel){
@@ -53,7 +54,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                Friend  friend = allFriends.get(position+1);
+                final Friend  friend = allFriends.get(position+1);
                 AlertDialog.Builder dialog= new AlertDialog.Builder(parent.getContext());
                 dialog.setTitle("通知");
                 dialog.setMessage("是否删除好友？");
@@ -63,8 +64,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //删除好友逻辑
+                    if(  friendViewModel.deleteFriend(friend.getyouxiang())==1){
 
-
+                    }
                     }
                 });
                 //点击否不做任何修改
@@ -76,16 +78,18 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
                 dialog.show();
             }
         });
-        //点击接收消息的逻辑
-        holder.messages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-              Friend  friend = allFriends.get(position+1);
-               // Toast.makeText(parent.getContext(),"消息",Toast.LENGTH_SHORT).show();
 
-            }
-        });
+//        被放弃使用
+//        //点击接收消息的逻辑
+//        holder.messages.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int position = holder.getAdapterPosition();
+//              Friend  friend = allFriends.get(position+1);
+//                Toast.makeText(parent.getContext(),"消息",Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
 
    //朋友item点击功能
         holder.friendview.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +144,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
         Friend friend = allFriends.get(position);
         holder.mingzi .setText( friend.getMingzi());
         holder.youxiang.setText(friend.getyouxiang());
-        holder.messages.setImageResource(friend.getMessages());
+//        holder.messages.setImageResource(friend.getMessages());
         holder.touxiang.setImageResource(friend.getTouxiang());
     }
 
@@ -165,7 +169,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
          mingzi = itemView.findViewById(R.id.xingming_friend);
             youxiang = itemView.findViewById(R.id.youxiang_friend);
             delete = itemView.findViewById(R.id.delete_friend);
-            messages = itemView.findViewById(R.id.message_friend);
+//            messages = itemView.findViewById(R.id.message_friend);
         }
 
     }

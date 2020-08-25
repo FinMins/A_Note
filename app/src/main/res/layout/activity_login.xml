@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/regist"
+        android:id="@+id/registButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="88dp"
@@ -29,10 +29,10 @@
         android:layout_marginStart="90dp"
         android:layout_marginEnd="50dp"
         android:text="登录"
-        app:layout_constraintBottom_toBottomOf="@+id/regist"
-        app:layout_constraintEnd_toStartOf="@+id/regist"
+        app:layout_constraintBottom_toBottomOf="@+id/registButton"
+        app:layout_constraintEnd_toStartOf="@+id/registButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/regist"
+        app:layout_constraintTop_toTopOf="@+id/registButton"
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -133,28 +133,25 @@
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="57dp"
         android:ems="10"
         android:hint="@string/loginNamehint"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/textView1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/userPassword"
+        app:layout_constraintStart_toStartOf="@+id/userPassword"
         app:layout_constraintTop_toTopOf="@+id/textView1"
-        app:layout_constraintVertical_bias="0.518" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
         android:text="用户名"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/userPassword"
         app:layout_constraintHorizontal_bias="0.018"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
         app:layout_constraintVertical_bias="0.58" />
 

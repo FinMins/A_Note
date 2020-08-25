@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,20 +70,26 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;   //RecycleView
 
-    private String TAV="MainActivity.this";   //Log用
+    private String TAG="MainActivity.this";   //Log用
 
     private ImageView isFinishedImage;    //是否完成的图片
 
     private ImageButton userImage ;   //用户头像
 
-   private TextView userXingming ;
-   private TextView user_Mail;
-  private NavigationView navigationView;
+   private TextView userXingming ;     //用户名字
+
+   private TextView user_Mail;       //用户邮箱
+
+  private HttpClientUtils httpClientUtils = new HttpClientUtils() ;    //请求组件
+
+    private NavigationView navigationView;
+
+
   private ImageView touxiang;
 
-    //将数据库的数据读取到listView中
+    //将数据库的数据读取到listView中,这是唯一的main获取数据库的入口
     private void initShijian(){
-        shiJianList= mainViewModel.getShiJian().getValue();
+        shiJianList= mainViewModel.getShiJianList().getValue();
     }
 
   //覆写重新加载函数
@@ -126,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                         DataSupport.delete(ShiJian.class,id_item);
                         shiJianList.remove(position_item);
                         shiJianAdapter.notifyItemRemoved(position_item);
+                        Refresh();
                         Toast.makeText(MainActivity.this,"事件删除成功",Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -197,14 +205,61 @@ public class MainActivity extends AppCompatActivity {
 
                 mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
                 navigationView= findViewById(R.id.nav_view);
+
+                //观察登录状态
+        mainViewModel.getIsLogined().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if(integer ==1){
+                  //登录状态从登录变成已登录
+//                        Viewmodel里自己设置了
+                }
+                if(integer ==0){
+                    //登录状态从已登录变成未登录
+               touxiang.setImageResource(R.drawable.header);
+               user_Mail.setText("xxxxxx@xxxxx.com");
+               userXingming.setText("xxxx");
+                }
+            }
+        });
+
+                //观察用户邮箱
+        mainViewModel.getUserEmail().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+            user_Mail.setText(s);
+            }
+        });
+        //观察用户头像
+        mainViewModel.getuserImgId().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+            touxiang.setImageResource(integer);
+            }
+        });
+
+                //观察用户名
                 mainViewModel.getUserEmail().observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
-
-                    }
+                 userXingming.setText(s);
+                        }
                 });
+
+             //观察事件组，如果一改变就直接把整个事件组传递给后台。
+                 mainViewModel.getShiJianList().observe(this, new Observer<List<ShiJian>>() {
+                   @Override
+                 public void onChanged(List<ShiJian> s) {
+                       Log.d(TAG, "调用了观察 ");
+                      Refresh();
+
+                 }
+                  });
+
+
+
                 user_Mail = navigationView.getHeaderView(0).findViewById(R.id.user_mail);
-                userXingming = navigationView.getHeaderView(0).findViewById(R.id.user_mail);
+                userXingming = navigationView.getHeaderView(0).findViewById(R.id.userXingming);
                 touxiang = navigationView.getHeaderView(0).findViewById(R.id.user_image);
 
                 touxiang.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                    }
                    if(mainViewModel.getIsLogined().getValue() == 1){
                        //进入用户登录后的界面
-
+                       Toast.makeText(MainActivity.this, "长按退出登录", Toast.LENGTH_SHORT).show();
                    }
                     }
                 });
@@ -299,7 +354,8 @@ public class MainActivity extends AppCompatActivity {
                     actionBar.setHomeAsUpIndicator(R.mipmap.wode);
                 }
                 //用户头像点击(暂时没有setonclick方法
-                userImage = (ImageButton)findViewById(R.id.user_image) ;
+//                userImage = (ImageButton)findViewById(R.id.user_image) ;
+
                 /*
                 userImage.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -334,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                              }
                              if(mainViewModel.getIsLogined().getValue()==IS_LOGINED) {
                             Intent groupIntent = new Intent(MainActivity.this,Groupctivity.class);
-                            groupIntent.putExtra("userNum",mainViewModel.getUserEmail().getValue());
+                            groupIntent.putExtra("userEmail",mainViewModel.getUserEmail().getValue());
                             startActivity(groupIntent);
                              //群组逻辑
                                  break;

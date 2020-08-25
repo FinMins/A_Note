@@ -1,6 +1,8 @@
 package com.example.finmins.materialtest;
+import android.app.AlertDialog;
 import android.content.Context;
 
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +19,11 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.finmins.materialtest.Model.GroupViewModel;
 
+import org.litepal.crud.DataSupport;
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Member;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -27,14 +31,18 @@ import java.util.List;
  */
 
 public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter. ViewHolder> {
-    private List<MemberInGroup> mMember;
-    private Context myContext;
-    private GroupViewModel groupViewModel;
+    public List<MemberInGroup> mMember;
+    public Context myContext;
+    public GroupViewModel groupViewModel;
+    public String  vipEmail;
+    public GroupInnerFragment groupInnerFragment;     //当前碎片
 
-    public MemberAdapter(Context context, List<MemberInGroup> memberlist, GroupViewModel groupViewModel) {
+    public MemberAdapter(Context context, List<MemberInGroup> memberlist, GroupViewModel groupViewModel,String VIPemail,GroupInnerFragment groupInnerFragment1) {
         mMember = memberlist ;
         myContext = context;
+        groupInnerFragment = groupInnerFragment1;
         this.groupViewModel = groupViewModel;
+        this.vipEmail =VIPemail;
     }
 
     @Override
@@ -90,21 +98,40 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter. ViewHolde
     public void onBindViewHolder(ViewHolder viewHolder,  int position) {
         if(viewHolder instanceof  ViewHolder) {
             final MemberInGroup member = mMember.get(position);
-            final int id =member.getId();    //得到ID
-             final int isVip = member.getMannerIsVip();  //查看是否为VIP
-            final int isSelf = member.getIsSelf();
+//            final int id =member.getId();    //得到ID
+            final  String selfEmail = member.getMannerEmail();
+            final String thisGroupName = member.getGroupName();
             final ViewHolder itemViewHold = ((ViewHolder) viewHolder);
             itemViewHold.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
             if (mOnItemClickLitener != null) {
+
+
+
                 itemViewHold.swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         itemViewHold.swipeLayout.close();//隐藏侧滑菜单区域
                         int position = itemViewHold.getLayoutPosition();
-                        mOnItemClickLitener.onItemClick(itemViewHold.swipeLayout, position,id);
                     }
                 });
-
+                //删除接口
+                itemViewHold.delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        itemViewHold.swipeLayout.close();
+                        int position = itemViewHold.getLayoutPosition();
+                        mOnItemClickLitener.onDeleteClick(position,selfEmail,thisGroupName);
+                    }
+                });
+                    //完成接口
+                itemViewHold.finish.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        itemViewHold.swipeLayout.close();
+                        int position = itemViewHold.getLayoutPosition();
+                        mOnItemClickLitener.onSetImgId( position,selfEmail,thisGroupName,member.getFinishedDate());
+                    }
+                });
 
                 //删除按钮
                 itemViewHold.delete.setOnClickListener(new View.OnClickListener() {
@@ -112,53 +139,102 @@ public class MemberAdapter extends RecyclerSwipeAdapter<MemberAdapter. ViewHolde
                     public void onClick(View v) {
                         itemViewHold.swipeLayout.close();
                         int position = itemViewHold.getLayoutPosition();
-                        mOnItemClickLitener.onDeleteClick(position,id);
-                        //是管理员
-                        if((isVip == 1) || (isSelf == 1)){
-
-                        }
-                         else {
-                            Toast.makeText(myContext, "没权限删除其他人", Toast.LENGTH_SHORT).show();
-                        }
+                        mOnItemClickLitener.onDeleteClick(position,selfEmail,thisGroupName);
                     }
                 });
-                //完成按钮
-                itemViewHold.finish.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        itemViewHold.swipeLayout.close();
-                        int position = itemViewHold.getLayoutPosition();
-                        mOnItemClickLitener.onSetImgId( position,id,member);
 
-                    }
-                });
             }
             mItemManger.bindView(viewHolder.itemView, position);//实现只展现一条列表项的侧滑区域
-            if(member.getMannerIsFinished()==0) {
-                itemViewHold.isFinished.setImageResource(R.mipmap.yuanquan);
-                itemViewHold.finish.setText("完成");
-            }else{
-                itemViewHold.isFinished.setImageResource(R.mipmap.zhengque);
-                itemViewHold. finish.setText("未完成");
-            }
+
+//
+//
+//            if(member.getMannerIsFinished()==0) {
+//                itemViewHold.finish.setText("完成");
+//            }else{
+//                itemViewHold. finish.setText("未完成");
+//            }
+
+
+
+            itemViewHold. finish.setText("打卡");
+            itemViewHold.isFinished.setImageResource(member.getMannerImgId());
             itemViewHold.memberName.setText(member.getMannerName());
-            itemViewHold.finishedYear.setText(String.valueOf(member.getFinishedYear()) + "/");
-            itemViewHold.finishedMonth.setText(String.valueOf(member.getFinishedMonth()) + "/");
-            itemViewHold.finishedDay.setText(String.valueOf(member.getFinishedDay()) + "/");
+            itemViewHold.finishedYear.setText(member.getFinishedDate() + "/");
+
         }
 
     }
 
 
 
+    //删除群的警告
+    public  void deleteMemberAlter(final String a,final String b  ){
+
+        //点击删除时的警告窗口
+        AlertDialog.Builder dialog = new AlertDialog.Builder(myContext);
+        dialog.setTitle("警告");
+        dialog.setMessage("确认删除？");
+        dialog.setCancelable(false);
+
+        //点击确定执行的代码
+        dialog.setPositiveButton("确认",new DialogInterface.OnClickListener(){
+
+            public void onClick(DialogInterface dialog, int which) {
+                //根据ID删除事件
+                groupViewModel.requestDeleteMember(a,b);
+                Toast.makeText(myContext,"群删除成功",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //点击取消执行的代码
+        dialog.setNegativeButton("取消",new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //点击取消无任何反应
+            }
+        });
+        dialog.show();
+    }
+
+
+
+//删除用户的警告
+    public void deleteGroupAlter(final  String a ){
+
+        //点击删除时的警告窗口
+        AlertDialog.Builder dialog = new AlertDialog.Builder(myContext);
+        dialog.setTitle("警告");
+        dialog.setMessage("确认删除？");
+        dialog.setCancelable(false);
+
+        //点击确定执行的代码
+        dialog.setPositiveButton("确认",new DialogInterface.OnClickListener(){
+
+            public void onClick(DialogInterface dialog, int which) {
+                //根据ID删除事件
+                groupViewModel.requestDeleteGroup(a);
+                Toast.makeText(myContext,"成员删除成功",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //点击取消执行的代码
+        dialog.setNegativeButton("取消",new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //点击取消无任何反应
+            }
+        });
+        dialog.show();
+    }
+
     public interface OnItemClickLitener
     {
-        void onItemClick(View view, int position,int id);
-        void onSetImgId(int position,int id,MemberInGroup member);
+
+        void onSetImgId(int position,String selfEmail,String groupName,String finishDate);
         /**置顶*/
         //  void onTopClick(int position);
         /**删除*/
-        void onDeleteClick(int position,int id);
+        void onDeleteClick(int position,String selfEmail,String groupName);
     }
 
     private OnItemClickLitener mOnItemClickLitener;

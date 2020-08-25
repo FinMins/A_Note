@@ -15,6 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.finmins.materialtest.Model.FriendViewModel;
+
 import java.util.List;
 
 
@@ -25,10 +27,11 @@ import java.util.List;
 public class ShareShiJianAdapter extends RecyclerView.Adapter<ShareShiJianAdapter.ShareShiJianHolder>{
     private  List<ShiJian> allShiJian ;
     private   Context context;
-
-    public  ShareShiJianAdapter(Context context, List<ShiJian> shiJians){
+    private FriendViewModel friendViewModel;
+    public  ShareShiJianAdapter(Context context, List<ShiJian> shiJians, FriendViewModel friendViewModel1){
         this.context=context;
         this.allShiJian = shiJians;
+        this.friendViewModel = friendViewModel1;
     }
 
     @NonNull
@@ -42,7 +45,7 @@ public class ShareShiJianAdapter extends RecyclerView.Adapter<ShareShiJianAdapte
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                ShiJian shijian  = allShiJian.get(position+1);
+                final ShiJian shijian  = allShiJian.get(position+1);
                 AlertDialog.Builder dialog= new AlertDialog.Builder(parent.getContext());
                 dialog.setTitle("通知");
                 dialog.setMessage("确定分享这个消息？");
@@ -53,6 +56,14 @@ public class ShareShiJianAdapter extends RecyclerView.Adapter<ShareShiJianAdapte
                     public void onClick(DialogInterface dialog, int which) {
                         //分享逻辑
 
+                    if(     friendViewModel.requestShareShiJian( shijian)==1)
+                    {//发送成功
+
+                    }else {
+//                        发送失败
+
+                    }
+                        ;
 
 
 

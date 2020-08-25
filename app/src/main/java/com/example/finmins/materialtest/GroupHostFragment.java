@@ -11,12 +11,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.daimajia.swipe.util.Attributes;
 import com.example.finmins.materialtest.Model.GroupViewModel;
 import com.example.finmins.materialtest.R;
 
@@ -34,7 +36,6 @@ public class GroupHostFragment extends Fragment {
     private  GroupAdapter adapter;    //朋友主界面适配器
     private GroupViewModel groupViewModel;    //群数据
     private LinearLayoutManager linearLayoutManager;   //item线性布局
-
     public GroupHostFragment() {
         // Required empty public constructor
     }
@@ -74,14 +75,41 @@ public class GroupHostFragment extends Fragment {
         }
     }
 
+    public  void refresh(){
+        groupList.clear();
+        recyclerView=view.findViewById(R.id.groupRecycler);
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager );
+        adapter= new GroupAdapter(getContext(),groupList,groupViewModel);
+        recyclerView.setAdapter(adapter);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setSelected(true);
+       groupList = groupViewModel.getGroupList().getValue();
+        adapter.notifyDataSetChanged();
+
+    }
+
+
+    public void watchGrouplist(){
+        //加载用户的群组到listgroup里
+        if(groupViewModel.requestGroupList(groupViewModel.getUserEmail())==1){
+            groupList = groupViewModel.getGroupList().getValue();
+        }else {
+            Toast.makeText(getContext(), "群列表加载失败！", Toast.LENGTH_SHORT).show();
+            Log.d("group", "群列表加载失败！");
+        }
+    }
 
 
 
     private void initControl(){
-        adapter = new GroupAdapter(getActivity(),groupList);
+        adapter = new GroupAdapter(getActivity(),groupList,groupViewModel);
         recyclerView = view.findViewById(R.id.groupRecycler);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         groupViewModel  = new ViewModelProvider(this).get(GroupViewModel.class);
+            watchGrouplist();
+
     }
 }

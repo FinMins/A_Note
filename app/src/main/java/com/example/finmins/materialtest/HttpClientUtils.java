@@ -2,51 +2,96 @@ package com.example.finmins.materialtest;
 
 import android.util.Log;
 
+
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
+
 
 public class HttpClientUtils {
+  private String response;
     /**
-     2 　　　* Psend服务请求
+     2 　　* send服务请求
      3      *@param type  请求方式
      4      * @param requestUrl 请求地址
      5      * @param requestbody 请求参数
-     6      * @return buffer.toString()
+     6      * @return responseText ;
      7      */
 
-    private String runable( ){
 
-        return
-    };
-    public String send(String type, String requestUrl, String requestbody){
-        final String types = type;
-        final String url = requestUrl;
-        final String body = requestbody;
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                if(types =="get"||types=="GET"){
-                    return sendGet(url);
-                }
-                if(types=="post"||types=="POST"){
-                    return sendPost(url,body);
-                }
-                else return "请求方式错误"; //说明是内部类的问题
-            }
-        }
-        run.run();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
+//    private Map<String, Object> JsonToMap(String s) {
+//        return JSON.parseObject(s);
+//    }
+
+    /**
+     2 　　* send服务请求
+     3      *@param type  请求方式
+     4      * @param requestUrl 请求地址
+     5      * @param requestbody 请求参数
+     6      * @return Map<string,object>
+     7      */
+
+
+    //返回json对象
+//    public JSONObject send(String type, String requestUrl, String requestbody){
+//        JSONObject jo = new JSONObject();
+//                if(type =="get"||type=="GET"){
 //
-//            }
-//        })
-    }
+//                    try{   JSONObject jo1 = new JSONObject(sendGet(requestUrl));
+//                        jo = jo1  ;
+//                    }catch (Exception e){
+//                    }
+//                }
+//                if(type=="post"||type=="POST"){
+//                    try {
+//                        JSONObject jo2 = new JSONObject(sendPost(requestUrl, requestbody));
+//                        jo = jo2  ;
+//                    }catch (Exception e){
+//
+//                    }
+//
+//                }
+//                return  jo;
+//        }
+//    //返回string
+//    public String send(String type, String requestUrl, String requestbody){
+//
+//               if(type =="get"||type=="GET") {
+//                   return sendGet(requestUrl);
+//               }
+//               if(type=="post"||type=="POST"){
+//                    return  sendPost(requestUrl, requestbody);
+//               }
+//               else return null;
+//       }
+
+    //返回string
+    public String send(final String type,final String requestUrl,final String requestbody){
+          Thread thread = new Thread(new Runnable() {
+              @Override
+              public void run() {
+                  if(type =="get"||type=="GET") {
+                      response= sendGet(requestUrl);
+                  }
+                  if(type=="post"||type=="POST"){
+                      response =sendPost(requestUrl, requestbody);
+                  }
+              }
+          });
+          try { thread.start();
+          thread.join();
+
+          }catch (Exception e){
+              Log.d("123123", "Http请求错误");
+          }
+        return response;
+       }
+
 
     /**
      2 　　　* Post服务请求
@@ -57,7 +102,7 @@ public class HttpClientUtils {
      7      */
 
 
-        public static String sendPost(String requestUrl, String requestbody){
+        public  String sendPost(String requestUrl, String requestbody){
 
          try {
                  //建立连接
@@ -116,7 +161,7 @@ public class HttpClientUtils {
   64      * @param requestUrl
   65      * @return buffer
   66      */
-            public static String sendGet(String requestUrl){
+            public String sendGet(String requestUrl){
       try{
               //建立连接
               URL url = new URL(requestUrl);

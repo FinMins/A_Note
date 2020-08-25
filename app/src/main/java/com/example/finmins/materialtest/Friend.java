@@ -24,16 +24,17 @@ public class Friend {
 
    private int haveMessages;//是否有消息，有消息为1，没有消息为2
 
-    public Friend(int touxiang, String mingzi ,String  youxiang,int messages ){
+    public Friend(int touxiang, String mingzi ,String  youxiang ){
         this.touxiang=touxiang;
-        this.haveMessages=messages;
+//        this.haveMessages=messages;
         this.youxiang=youxiang;
       this.mingzi = mingzi;
     }
-    //将分享的事件添加到朋友的分享事件组中
-   public void setShareShiJians(ShiJian shijian){
-        this.shareShiJians.add(shijian);
-   }
+//    //将分享的事件添加到朋友的分享事件组中
+//   public void setShareShiJians(ShiJian shijian){
+//        this.shareShiJians.add(shijian);
+//   }
+
     //设置朋友的头像
     public void setTouxiang(int id){
         this.id=id;
@@ -55,15 +56,15 @@ public class Friend {
         return youxiang ;
     }
 
-    //返回分享的事件组给viewmodel
-    public List<ShiJian> getShareShiJians(){
-        return this.shareShiJians;
-    }
+//    //返回分享的事件组给viewmodel
+//    public List<ShiJian> getShareShiJians(){
+//        return this.shareShiJians;
+//    }
 
-    //返回有消息时的图片ID
-    public int getMessages(){
-        return haveMessages;
-    }
+//    //返回有消息时的图片ID
+//    public int getMessages(){
+//        return haveMessages;
+//    }
     //获取朋友的ID
     public int getId(){return id;}
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.daimajia.swipe.util.Attributes;
+import com.example.finmins.materialtest.Model.FriendViewModel;
 
 import org.litepal.crud.DataSupport;
 
@@ -37,7 +39,7 @@ public class FriendShareFragment extends Fragment {
     private ImageButton shareButton  ;
     private EditText shareSearch;
     private String search;  //搜索内容
-
+     private FriendViewModel friendViewModel;
     public FriendShareFragment() {
         // Required empty public constructor
     }
@@ -71,11 +73,13 @@ public class FriendShareFragment extends Fragment {
 
 
     private void initControl(){
-        shareAdapter = new ShareShiJianAdapter(getContext(),shareShiJianList);
+        friendViewModel   = new ViewModelProvider(this).get(FriendViewModel.class);
+        shareAdapter = new ShareShiJianAdapter(getContext(),shareShiJianList,friendViewModel);
         shareRecyclerView = view.findViewById(R.id.share_recyclerview);
         shareButton = view.findViewById(R.id.shareButton);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         shareSearch=view.findViewById(R.id.shareEitd);
+
     }
 
 
@@ -111,7 +115,7 @@ public class FriendShareFragment extends Fragment {
         shareRecyclerView=view.findViewById(R.id.share_recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         shareRecyclerView.setLayoutManager(layoutManager);
-        shareAdapter = new ShareShiJianAdapter(getContext(),shareShiJianList);
+        shareAdapter = new ShareShiJianAdapter(getContext(),shareShiJianList,friendViewModel);
        // Log.d(getTag(), "点击了搜索");
         shareRecyclerView.setAdapter(shareAdapter);
       //  shareRecyclerView.setSelected(true);

@@ -4,13 +4,21 @@ public class Group {
     private int groupImg_id  ;  //群头像
     private String groupName ; //群名
     private int id ;    //群id
+    private String groupVipEmail ;//群管理员邮箱
 
     public Group(int id ,String name ){
         this.groupImg_id =id;
         this.groupName = name;
     }
 
+//设置群邮箱
+   public  void  setGroupVipEmail(String email){
+        this.groupVipEmail = email;
+   }
 
+    public  String getGroupVipEmail(){
+        return groupVipEmail ;
+    }
 
     //设置群头像
     public void  setGroupImgId(int groupImgId){

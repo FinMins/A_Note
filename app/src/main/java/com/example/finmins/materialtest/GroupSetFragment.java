@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finmins.materialtest.Model.GroupViewModel;
 import com.example.finmins.materialtest.R;
@@ -30,10 +31,9 @@ public class GroupSetFragment extends Fragment {
     private TextView searchGroupName;//搜索群的名
     private Button addGroupButton;//添加群按钮
     private EditText searchGroupEdit;//搜索群号文本框
-    private EditText creatGroupNumEidt;//创建群号文本框
     private EditText creatGroupNameEdit;//创建群名文本框
     private GroupViewModel groupViewModel ; //群viewmodel
-
+    private String isTrueEmail =null  ;//这是能用的email
 
     public GroupSetFragment() {
         // Required empty public constructor
@@ -58,11 +58,27 @@ public class GroupSetFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+            //传入输入的群名，判断是否有这个群
+             if(   groupViewModel.requestGroupImg(searchGroupEdit.getText().toString())==1 ){
+                 isTrueEmail = searchGroupEdit.getText().toString();
+             };
             }
         });
 
+        //观测搜索群头像
+        groupViewModel.getSearchImg().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                searchGroupImg.setImageResource(integer);
+            }
+        });
+        //观测搜索群的名字
+        groupViewModel.getSearchName().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                searchGroupName.setText(s);
+            }
+        });
 
         //点击创建群的功能
         creatGroupButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +106,35 @@ public class GroupSetFragment extends Fragment {
             }
         });
 
+        //添加群的按钮
+        addGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //点击添加按钮加群。
+                if(isTrueEmail!=null){
+                  if(  groupViewModel.requestAddGroup(groupViewModel.getUserEmail(),isTrueEmail)==1);
+                    Toast.makeText(getContext(), "加群成功", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getContext(), "失败，返回值错误", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+       //创建群的按钮
+        creatGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(creatGroupNameEdit.getText().toString()!=null){
+                   if( groupViewModel.requestAddGroup(groupViewModel.getUserEmail(),creatGroupNameEdit.getText().toString())==1){
+                       Toast.makeText(getContext(), "创建成功", Toast.LENGTH_SHORT).show();
+                   }else{
+                       Toast.makeText(getContext(), "创建失败", Toast.LENGTH_SHORT).show();
+                   }
+
+                }
+            }
+        });
 
     }
 
@@ -102,7 +147,6 @@ public class GroupSetFragment extends Fragment {
          searchGroupName = getView().findViewById(R.id.searchGroupName);
          addGroupButton = getView().findViewById(R.id.addGroupButton);
          searchGroupEdit = getView().findViewById(R.id.searchGroupEdit);
-        creatGroupNumEidt = getView().findViewById(R.id.creatGroupNumEdit);
        creatGroupNameEdit = getView().findViewById(R.id.creatGroupNameEdit);
         groupViewModel = new ViewModelProvider(this).get(GroupViewModel.class);
     }

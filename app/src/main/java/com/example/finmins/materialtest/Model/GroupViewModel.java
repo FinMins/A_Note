@@ -4,9 +4,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.finmins.materialtest.Group;
+import com.example.finmins.materialtest.HttpClientUtils;
 import com.example.finmins.materialtest.MemberInGroup;
 
 import java.lang.reflect.Member;
+import java.util.Calendar;
 import java.util.List;
 
 public class GroupViewModel extends ViewModel {
@@ -18,8 +20,27 @@ public class GroupViewModel extends ViewModel {
   private MutableLiveData<Integer> addGroupId ; //创建群的群号
   private MutableLiveData<String> addGroupName ; //创建群的名字
   private MutableLiveData<Integer> isVip ;  //是否是群管理员
+   private String userEmail ; //用户邮箱
+    private HttpClientUtils httpClientUtils  = new HttpClientUtils() ;
+//获取用户邮箱
+  public String getUserEmail(){
+      return userEmail;
+  }
 
+//  设置用户邮箱
+    public void setUserEmail(String email){
+      userEmail = email;
+    }
+    //设置搜索的群头像
+    public void setSearchImg(int i ){
+      this.searchImg.setValue(i);
+    }
 
+    //设置搜索群的群名
+    public void setSearchName(String s){
+      this.searchName.setValue(s);
+
+    }
     //获取搜索的群名
   public MutableLiveData<String> getSearchName (){
       if (   searchName ==null){
@@ -80,6 +101,11 @@ public class GroupViewModel extends ViewModel {
         }
         return groupList  ;
     }
+    //设置群列表
+    public void  setGroupList(List<Group> groupList){
+      this.groupList.setValue(groupList);
+    }
+
 
     //获取群成员列表
     public MutableLiveData<List<MemberInGroup>> getMemberList (){
@@ -90,29 +116,76 @@ public class GroupViewModel extends ViewModel {
         return memberList  ;
     }
 
+    //添加群
+    public int requestAddGroup(String selfEmail,String groupNmae){
+      String response ;
+      response = httpClientUtils.send("","","");
+
+
+      return 1;
+    }
+
+    //创建群
+    public int requestCreateGroup(String selfEmail,String groupName){
+      String response;
+      response = httpClientUtils.send("","","");
+
+      return 1;
+    }
+        //删除一个群的成员
+    public int requestDeleteMember(String groupnName,String memberEmail){
+      String response;
+      response = httpClientUtils.send("","","");
+
+      return 1;
+    }
+    //删除一个群
+    public int requestDeleteGroup(String groupName){
+      String response;
+      response = httpClientUtils.send("","","");
+      return 1;
+    }
 
     //从数据库获取--群列表
 
 
     //从数据库获取--群成员列表
+     public void requestMemberLsit(String groupName){
+      String response ;
+      response = httpClientUtils.send("","","");
+
+      memberList.setValue( null);
+     }
+
+  //从数据库获取群列表
+    public int requestGroupList(String userEmail){
+      String response ;
+      response = httpClientUtils.send("","","");
 
 
-    //从数据库获取--搜索群的群号
-
-
-     //从数据库获取--搜索群的名字
+//     把群list赋值进去   setGroupList(  );
+      return 1;
+    }
 
 
      //从数据库获取--搜索群的头像
+        public  int requestGroupImg(String grouName ){
+            String response ;
+            response = httpClientUtils.send("","","");
+
+            setSearchImg(1);
+            setSearchName(grouName);
+            return 1;
+        }
 
 
-    //从数据库获取--创建群的群号
 
 
-    //从数据库获取--创建群的名字
-
-
-   //从数据库获取--是否是群管理员
-
-
+    //发送打卡用户给后台
+    //传个群名，用户名，打卡年，打卡月，打卡天
+    public int requestFinishAmember(String groupName,String memberEmail,String date){
+      String response ;
+      response= httpClientUtils.send("","","");
+      return 1;
+    }
 }
