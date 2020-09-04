@@ -1,90 +1,113 @@
 package com.example.finmins.materialtest.Model;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.finmins.materialtest.HttpClientUtils;
 import com.example.finmins.materialtest.R;
 import com.example.finmins.materialtest.ShiJian;
+import com.example.finmins.materialtest.YongHu;
 
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class MainViewModel extends ViewModel {
-    private MutableLiveData<Integer> isLogined  ;  //是否登录
-    private MutableLiveData<String >userName ;  //用户名
-    private MutableLiveData<String > userPassword;  //密码
-   private MutableLiveData<String > userEmail;    // 用户邮箱
-   private MutableLiveData<String > userXingming;     //用户的名字
-    private MutableLiveData<List<ShiJian>>  shiJianList ;//事件列表
-    private ImageView userImage ;   //用户头像
+    private MutableLiveData<Integer> isLogined;  //是否登录
+    public  MutableLiveData<String> userName;  //用户名
+    private MutableLiveData<String> userPassword;  //密码
+    private MutableLiveData<String> userEmail;    // 用户邮箱
+    private MutableLiveData<List<ShiJian>> shiJianList;//事件列表
     private MutableLiveData<Integer> userImgId;    //用户头像数字
-    private String userLoginEmail ; //用户邮箱
-    private String userLoginPassword; //用户密码
     private HttpClientUtils httpClientUtils = new HttpClientUtils();   //请求
-    final   String  URL = "http://localhost:3000" ;          //本地服务器网址
-    private MutableLiveData<Integer> isLogin ;
+    final String URL = "http://localhost:3000";          //本地服务器网址
+    private MutableLiveData<Integer> isLogin;
     private List<ShiJian> temshiJian = new ArrayList<ShiJian>();
 
 
-    //设置登录状态
-    public void setIsLogin(int a  ){
-        isLogin.setValue(a);
-    }
+//    //设置登录状态
+//    public void setIsLogin(int a  ){
+//        isLogin.setValue(a);
+//    }
 
-
-    //登录的请求 username,password
-//    假设验证成功返回1 ，失败返回0
-    public int login(final String userName, final String passWord ){
-        String a =  httpClientUtils.send("get",URL+"?username="+userName+"&password="+passWord,"");
-        if(Integer.parseInt(a)==1){
-            setIsLogined(1);
-            setUserInf(userName);
-            return 1;
-        }
-
-        else return  0;
-    }
+//
+//    //登录的请求 username,password
+////    假设验证成功返回1 ，失败返回0
+//    public int login(final String userName, final String passWord ){
+//       final String requesbody = " { \"youxiang\":\"123456@qq.com\", \"password\":\"9666\" }";
+////       final String requesbody = " { \"youxiang\":\""+userName+"\", \"password\":\""+passWord+"\" }";
+//        String a = httpClientUtils.sendPostByOkHttp("http://172.18.95.221:9999/yonghu/login",requesbody);
+//        if(a !=null){
+////            setIsLogined(1);
+//            JSONObject jb = JSON.parseObject(a);
+//            String youxiang = jb.getString("youxiang");
+//            String touxiang = jb.getString("touxiang");
+//            String mingzi = jb.getString("mingzi");
+//            String password = jb.getString("password");
+//            setUserInf(youxiang,touxiang,mingzi);
+//            Log.d("取出邮箱", youxiang);
+//            Log.d("取出名字", mingzi);
+////            Log.d("取出头像", touxiang);
+//            return 1;
+//        }
+//
+//
+//
+//
+//        return 0;
+//
+//
+//
+//    }
 
     //获取用户头像数字
-    public MutableLiveData<Integer>  getuserImgId(){
-        if(userImgId== null){
+    public MutableLiveData<Integer> getuserImgId() {
+        if (userImgId == null) {
             userImgId = new MutableLiveData<Integer>();
             userImgId.setValue(R.drawable.header);
         }
         return userImgId;
     }
-
-    //是否登录成功   login专用
-    public MutableLiveData<Integer> getIsLogin(){
-        if(isLogin==null) {
-            isLogin = new MutableLiveData<Integer>();
-            isLogin.setValue(2);
-        }
-        return isLogin;
-    }
-
-
+//
+//    //是否登录成功   login专用
+//    public MutableLiveData<Integer> getIsLogin(){
+//        if(isLogin==null) {
+//            isLogin = new MutableLiveData<Integer>();
+//            isLogin.setValue(2);
+//        }
+//        return isLogin;
+//    }
 
 
     //是否已经登录     main专用。
-    public MutableLiveData<Integer> getIsLogined(){
-        if(isLogined ==null) {
+    public MutableLiveData<Integer> getIsLogined() {
+        if (isLogined == null) {
             isLogined = new MutableLiveData<Integer>();
-            isLogined.setValue( 1);
+            isLogined.setValue(0);
         }
         return isLogined;
     }
 
 
-//获取事件数据
-    public  MutableLiveData<List<ShiJian>> getShiJianList(){
-        if (shiJianList ==null){
+    //获取事件数据
+    public MutableLiveData<List<ShiJian>> getShiJianList() {
+        if (shiJianList == null) {
             shiJianList = new MutableLiveData<List<ShiJian>>();
             shiJianList.setValue(temshiJian);
             return shiJianList;
@@ -93,32 +116,33 @@ public class MainViewModel extends ViewModel {
         return shiJianList;
     }
 
-//获取名字
-public MutableLiveData<String> getUserName(){
-    if(userName ==null) {
-        userName= new MutableLiveData<String>();
-        userName.setValue("");
-        return  userName;
+    //获取名字
+    public MutableLiveData<String> getUserName() {
+        if (userName == null) {
+            userName = new MutableLiveData<String>();
+            userName.setValue("xxxx");
+            return userName;
+        }
+
+        Log.d("getusername", "进去了get");
+        return userName;
     }
-    return userName;
-}
 
-//获取密码
-public MutableLiveData<String> getUserPassword(){
-    if(userPassword ==null) {
-        userPassword = new MutableLiveData<String >();
-        userPassword.setValue("xxxxx");
-        return  userPassword;
+    //获取密码
+    public MutableLiveData<String> getUserPassword() {
+        if (userPassword == null) {
+            userPassword = new MutableLiveData<String>();
+            userPassword.setValue("xxxxx");
+            return userPassword;
+        }
+        return userPassword;
     }
-    return userPassword;
-}
 
 
-
-//获取邮箱
-    public MutableLiveData<String> getUserEmail(){
-        if(userEmail==null) {
-            userEmail = new MutableLiveData<String >();
+    //获取邮箱
+    public MutableLiveData<String> getUserEmail() {
+        if (userEmail == null) {
+            userEmail = new MutableLiveData<String>();
             userEmail.setValue("xxxxx@xxx.com");
             return userEmail;
         }
@@ -126,71 +150,60 @@ public MutableLiveData<String> getUserPassword(){
     }
 
     //注册用户
-    public int registerUser(){
+    public int registerUser() {
         String response;
-        response = httpClientUtils.send("","","");
+        response = httpClientUtils.send("", "", "");
 
-       return Integer.parseInt(response);
+        return Integer.parseInt(response);
     }
-
 
 
     //设置用户名
-    public void setUserName(String username){
-        userName.setValue(username);
+    public void setUserName(String username) {
+        Log.d("设置用户名：", username);
+       //userName.setValue(username);
     }
+
     //设置密码
-    public void setUserPassword(String userpassword){
+    public void setUserPassword(String userpassword) {
         userPassword.setValue(userpassword);
     }
 
     //设置邮箱
-    public void setUserEmail(String usermail){
+    public void setUserEmail(String usermail) {
+
         userEmail.setValue(usermail);
     }
 
     //设置登录
-    public void setIsLogined(Integer isLogin){
-   isLogined.setValue(isLogin);
+    public void setIsLogined(Integer isLogin) {
+        isLogined.setValue(isLogin);
     }
 
     //设置头像
-    public void setUserImgId(Integer imgId){
+    public void setUserImgId(Integer imgId) {
+        Log.d("设置了头像", imgId.toString());
         userImgId.setValue(imgId);
     }
 
-//设置用户信息到主界面
-    public void setUserInf(String userName){
+    //设置用户信息到主界面
+    public void setUserInf() {
         //设置用户头像：
-        setUserImgId(  requestImg(userName)) ;
+        setUserImgId(userImgId.getValue());
         //设置用户邮箱
-        setUserEmail(userName);
+        setUserEmail(userEmail.getValue());
         //设置用户名字
-        setUserName(requestName(userName));
+        setUserName(userName.getValue());
     }
 
 
     //从数据库得到事件列表
-    public  void setShiJianList(){
-        List<ShiJian>  shijians = DataSupport.findAll(ShiJian.class);
-        for(ShiJian shijian:shijians){
+    public void setShiJianList() {
+        List<ShiJian> shijians = DataSupport.findAll(ShiJian.class);
+        for (ShiJian shijian : shijians) {
             shiJianList.getValue().add(shijian);
         }
-        //
-    //把事件给发送到后台
-        httpClientUtils.send("","","");
 
     }
-
-    //从数据库得到用户头像 ： 参数：用户邮箱String ,返回 头像int
-    public int requestImg(String email){
-        return Integer.parseInt(httpClientUtils.send("","","")  );
-    }
-
-    //从数据库获取用户名字： 参数：用户邮箱:String ,返回 名字String
-    public String requestName(String email){
-        return  httpClientUtils.send("","","");
-    }
-
-
 }
+

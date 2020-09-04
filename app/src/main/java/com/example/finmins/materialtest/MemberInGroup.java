@@ -1,12 +1,20 @@
 package com.example.finmins.materialtest;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 public class MemberInGroup {
+
+    @JSONField(name = "GROUP NAME")
     private String groupName  ;//所在群的名字
+    @JSONField(name = "MANNER IMG ID")
     private int mannerImgId ; //成员头像
+    @JSONField(name = "MANNER NAME")
     private String mannerName ;//成员名字
+    @JSONField(name = "MANNER EMAIL")
     private String mannerEmail; //成员邮箱
 //    private int mannerIsFinished ; //成员是否完成
 //    private int mannerIsVip ;   //成员是否是管理员
+    @JSONField(name = "FINIFSHED DATA")
     private String finishedDate;    //成员完成年份;
       //成员能完成填
 //    private int isSelf ; //是否是自己

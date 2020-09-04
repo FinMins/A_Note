@@ -1,13 +1,18 @@
 package com.example.finmins.materialtest;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 public class Group {
-    private int groupImg_id  ;  //群头像
+    @JSONField(name = "GROUP IMG ID")
+    private int groupImgId  ;  //群头像
+    @JSONField(name = "GROUP NAME")
     private String groupName ; //群名
     private int id ;    //群id
+    @JSONField(name = "GROUP VIP EMAIL")
     private String groupVipEmail ;//群管理员邮箱
 
     public Group(int id ,String name ){
-        this.groupImg_id =id;
+        this.groupImgId =id;
         this.groupName = name;
     }
 
@@ -22,7 +27,7 @@ public class Group {
 
     //设置群头像
     public void  setGroupImgId(int groupImgId){
-        this.groupImg_id = groupImgId;
+        this.groupImgId = groupImgId;
     }
     //设置群名字
     public void setGroupName(String groupName){
@@ -30,7 +35,7 @@ public class Group {
     }
     //返回群头像
     public int getGroupImgId(){
-        return this.groupImg_id;
+        return this.groupImgId;
     }
     //返回群名字
     public String getGroupName(){

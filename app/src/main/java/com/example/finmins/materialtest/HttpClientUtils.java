@@ -12,9 +12,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 
 public class HttpClientUtils {
-  private String response;
+  private String responseByOkhttp ;
     /**
      2 　　* send服务请求
      3      *@param type  请求方式
@@ -72,14 +78,16 @@ public class HttpClientUtils {
 
     //返回string
     public String send(final String type,final String requestUrl,final String requestbody){
+
+
           Thread thread = new Thread(new Runnable() {
               @Override
               public void run() {
                   if(type =="get"||type=="GET") {
-                      response= sendGet(requestUrl);
+                      responseByOkhttp= sendGet(requestUrl);
                   }
                   if(type=="post"||type=="POST"){
-                      response =sendPost(requestUrl, requestbody);
+                      responseByOkhttp =sendPost(requestUrl, requestbody);
                   }
               }
           });
@@ -89,7 +97,7 @@ public class HttpClientUtils {
           }catch (Exception e){
               Log.d("123123", "Http请求错误");
           }
-        return response;
+        return responseByOkhttp;
        }
 
 
@@ -102,7 +110,7 @@ public class HttpClientUtils {
      7      */
 
 
-        public  String sendPost(String requestUrl, String requestbody){
+        public  String sendPost(String requestUrl, String requestJsonBody){
 
          try {
                  //建立连接
@@ -114,14 +122,14 @@ public class HttpClientUtils {
                  connection.setDoInput(true); //使用URL连接进行输入
                  connection.setUseCaches(false); //忽略缓存
                  connection.setRequestMethod("POST"); //设置URL请求方法
-                 String requestString = requestbody;
+                 String requestString = requestJsonBody;
 
                  //设置请求属性
                  byte[] requestStringBytes = requestString.getBytes(); //获取数据字节数据
-                 connection.setRequestProperty("Content-length", "" + requestStringBytes.length);
-                 connection.setRequestProperty("Content-Type", "application/octet-stream");
-                 connection.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
-                 connection.setRequestProperty("Charset", "UTF-8");
+//                 connection.setRequestProperty("Content-length", "" + requestStringBytes.length);
+//                 connection.setRequestProperty("Content-Type", "application/");
+//                 connection.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
+//                 connection.setRequestProperty("Charset", "UTF-8");
 
                  connection.setConnectTimeout(8000);
                  connection.setReadTimeout(8000);
@@ -199,4 +207,47 @@ public class HttpClientUtils {
            }
        return null;
    }
+
+
+
+
+
+/**
+ 2 　　　* OkhttprequestPost服务请求
+ 3      *
+ 4      * @param requestUrl 请求地址
+ 5      * @param requestbody 请求参数
+ 6      * @return buffer.toString()
+ 7      */
+
+
+    public String sendPostByOkHttp(final String requestUrl, final String requestJsonBody){
+        final MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+
+     Thread a =   new Thread(new Runnable() {
+           @Override
+           public void run() {
+               try{
+                  OkHttpClient okHttpClient = new OkHttpClient();
+                   Request request = new Request.Builder()
+                           .url(requestUrl)
+                           .post(RequestBody .create(requestJsonBody,mediaType)).build();
+                   Response response = okHttpClient.newCall(request).execute();
+                   responseByOkhttp = response.body().string();
+                   Log.d("okhttp返回内容", responseByOkhttp);
+               }catch (Exception e){
+             responseByOkhttp = null;
+               }
+           }
+       });
+     try{
+         a.start();
+         a.join();
+         return responseByOkhttp;
+     }catch (Exception e){
+         return "请求错误";
+     }
+
+
+    }
 }

@@ -5,17 +5,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Friend {
     //ImageView touxiang;   //头像
     private int id ;   //好友ID
+    @JSONField(name = "TOU XIANG")
      private int touxiang;    //好友头像
+    @JSONField(name = "MING ZI")
     private String mingzi;    //好友名字
+    @JSONField(name = "YOU XIANG ")
     private  String youxiang ;   //好友邮箱
    //
-    private List<ShiJian> shareShiJians =new ArrayList<ShiJian>();
+//    private List<ShiJian> shareShiJians =new ArrayList<ShiJian>();
 
    // Button methods;    //方法
 

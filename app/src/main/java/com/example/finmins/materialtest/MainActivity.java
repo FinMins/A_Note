@@ -30,6 +30,7 @@ import com.example.finmins.materialtest.Model.MainViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
 import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
@@ -49,6 +50,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 
 import java.io.File;
 public class MainActivity extends AppCompatActivity {
@@ -184,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
     //下拉刷新事件
         public void Refresh(){
+            mainViewModel.getUserName();
         shiJianList.clear();
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -198,13 +201,46 @@ public class MainActivity extends AppCompatActivity {
         initEvents();
     }
 
+    private   void init(){
+        Intent intent = getIntent();
+        String userName = intent.getStringExtra("loginMingZi");
+        String userEmail = intent.getStringExtra("loginYouXiang");
+        String userPassword = intent.getStringExtra("loginPassword");
+        int userTouXiang = intent.getIntExtra("loginTouXiang",0);
+        if (userName !=null){
+            mainViewModel.getUserName();
+            mainViewModel.getUserEmail();
+            mainViewModel.getuserImgId();
+            mainViewModel.getUserPassword();
+            mainViewModel.getIsLogined();
+            mainViewModel.userName.setValue(userName);
+//            System.out.println(mainViewModel.userName.toString());
+            Log.d("这是大佬的内容", mainViewModel.userName.toString());
+            mainViewModel.setUserEmail(userEmail);
+            mainViewModel.setUserImgId(userTouXiang);
+            mainViewModel.setUserPassword(userPassword);
+            mainViewModel.setIsLogined(1);
+        }
+
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
+               mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+                init();
 
-                mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+
+
                 navigationView= findViewById(R.id.nav_view);
+
+
+
+
 
                 //观察登录状态
         mainViewModel.getIsLogined().observe(this, new Observer<Integer>() {
@@ -212,13 +248,17 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Integer integer) {
                 if(integer ==1){
                   //登录状态从登录变成已登录
-//                        Viewmodel里自己设置了
+                  mainViewModel.setUserInf();
                 }
                 if(integer ==0){
                     //登录状态从已登录变成未登录
-               touxiang.setImageResource(R.drawable.header);
-               user_Mail.setText("xxxxxx@xxxxx.com");
-               userXingming.setText("xxxx");
+//               touxiang.setImageResource(R.drawable.header);
+////               user_Mail.setText("xxxxxx@xxxxx.com");
+////               userXingming.setText("xxxx");
+                    mainViewModel.setUserImgId(R.drawable.header);
+                    mainViewModel.setUserEmail("xxxx@qq.com");
+                    mainViewModel.getUserName();
+                    mainViewModel.setUserName("xxxxx");
                 }
             }
         });
@@ -227,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel.getUserEmail().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
+                Log.d("观察到了邮箱", s);
             user_Mail.setText(s);
             }
         });
@@ -237,11 +278,11 @@ public class MainActivity extends AppCompatActivity {
             touxiang.setImageResource(integer);
             }
         });
-
                 //观察用户名
-                mainViewModel.getUserEmail().observe(this, new Observer<String>() {
+                mainViewModel.getUserName().observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
+                        Log.d("观察到了用户名", s);
                  userXingming.setText(s);
                         }
                 });
@@ -398,6 +439,7 @@ public class MainActivity extends AppCompatActivity {
                          case R.id.nav_userdata:
                              //修改资料
                              Intent changeInfor = new Intent(MainActivity.this,ChangeinformationActivity.class);
+                             changeInfor.putExtra("userEmail",mainViewModel.getUserEmail().getValue());
                              startActivity(changeInfor);
                              break;
                          case R.id.nav_bill:

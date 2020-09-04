@@ -50,6 +50,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
     implementation files('C:/Program Files/Android/AndroidCode/MaterialTest/libs/net.sf.json/json-lib-2.4-jdk15.jar')
     implementation files('C:/Program Files/Android/AndroidCode/MaterialTest/libs/fastjson-1.2.73.jar')
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
 }
 repositories {
     mavenCentral()
