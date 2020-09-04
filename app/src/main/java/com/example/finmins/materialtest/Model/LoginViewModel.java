@@ -1,8 +1,6 @@
 package com.example.finmins.materialtest.Model;
 
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -18,7 +16,7 @@ public class LoginViewModel extends ViewModel {
    public String userPassword; //用户密码
    public String userName ; //用户名字
     private HttpClientUtils httpClientUtils = new HttpClientUtils();   //请求
-    final   String  URL = "http://localhost:3000" ;          //本地服务器网址
+    final private   String  URL = "http://localhost:3000" ;          //本地服务器网址
     private MutableLiveData<Integer> isLogin ;
 
     //设置登录状态
@@ -40,7 +38,7 @@ public class LoginViewModel extends ViewModel {
     public int login(final String userEmailtem, final String passWord ){
         final String requesbody = " { \"youxiang\":\""+userEmailtem+"\", \"password\":\""+passWord+"\" }";
 //       final String requesbody = " { \"youxiang\":\""+userName+"\", \"password\":\""+passWord+"\" }";
-        String a = httpClientUtils.sendPostByOkHttp("http://172.18.95.221:9999/yonghu/login",requesbody);
+        String a = httpClientUtils.sendPostByOkHttp(URL+"/yonghu/login",requesbody);
         if(a !=null){
 //            setIsLogined(1);
             JSONObject jb = JSON.parseObject(a);

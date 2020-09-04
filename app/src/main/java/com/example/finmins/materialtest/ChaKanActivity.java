@@ -17,17 +17,9 @@ import android.graphics.Matrix;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +29,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import org.litepal.crud.DataSupport;
 
@@ -65,6 +63,7 @@ public class ChaKanActivity extends AppCompatActivity {
     private int hour_alarm;     //闹钟的小时
     private int minute_alarm;   //闹钟的的分钟
     private int isAlarm;     // 事件是否有闹钟
+    private String time ; //事件时间
     private ImageView editTextPhoto;         //事件里的图片
     private ImageView editTextAlbum;        //事件里的相册图片
     private Uri imageUri;     //获取到的图片转化成Uri地址
@@ -75,6 +74,8 @@ public class ChaKanActivity extends AppCompatActivity {
    private  ImageButton drawBoard;     //画板控件
     private Button playSoundRecorder ;    //播放录音控件
     private String soundRecorderPath;    //录音路径；
+    private HttpClientUtils httpClientUtils = new HttpClientUtils();
+    private  final  String  URL = "http://192.168.43.61:9999";
      private  Uri  soundUri ;
     /**接受自己输入的图片并展示
      * 调节图片大小
@@ -367,6 +368,8 @@ public class ChaKanActivity extends AppCompatActivity {
                     ShiJian shijian =new ShiJian();
                     shijian.setBiaoti(editTextBiaoTi.getText().toString());
                     shijian.setNeirong(editTextNeiRong.getText().toString());
+                    changeBiaoti(editTextBiaoTi.getText().toString());
+                    changeNeiRong(editTextNeiRong.getText().toString());
             //判断录音文件是否更改
                     if(soundRecorderPath== null){
                         shijian.setToDefault("soundRecorderPath");
@@ -382,6 +385,7 @@ public class ChaKanActivity extends AppCompatActivity {
                     }
                     else{
                         shijian.setPhoto(imagesByPhoto);
+                        changeImg(imagesByPhoto);
                     }
 
                     shijian.update(shiJian_id);
@@ -416,8 +420,37 @@ public class ChaKanActivity extends AppCompatActivity {
 
     }
 
+    //上传修改的标题
+    private void changeBiaoti( String biaoti){
+        String updateBiaoti = "{\n" +
+                "\n" +
+                "\"biaoti\":\""+ biaoti+"\",\n" +
+                "\"place\":\""+time+"\"\n" +
+                "\n" +
+                "}";
+        httpClientUtils.sendPostByOkHttp(URL+"/shijian/updatebiaoti",updateBiaoti);
+    }
 
-
+    //上传修改的内容
+    private void changeNeiRong( String neirong){
+        String updateNeirong = "{\n" +
+                "\n" +
+                "\"neirong\":\""+ neirong+"\",\n" +
+                "\"place\":\""+time+"\"\n" +
+                "\n" +
+                "}";
+        httpClientUtils.sendPostByOkHttp(URL+"/shijian/update",updateNeirong);
+    }
+    //上传修改的图片
+    private void changeImg( byte[] img){
+        String updateimg = "{\n" +
+                "\n" +
+                "\"photo\":\""+ img+"\",\n" +
+                "\"place\":\""+time+"\"\n" +
+                "\n" +
+                "}";
+        httpClientUtils.sendPostByOkHttp(URL+"/shijian/updatephoto",updateimg);
+    }
     //获取时间的位置
     public void getPosition(){
         Intent intent=getIntent();
@@ -431,6 +464,7 @@ public class ChaKanActivity extends AppCompatActivity {
         editTextNeiRong=(EditText)findViewById(R.id.editTextNeirongInChaKanLayout);   //获取时间里的内容控件
        addSoundRecording=(ImageButton)findViewById(R.id.addSoundRecordingInChaKanLayout);    // 活动界面里的语音控件
         shijian=DataSupport.find(ShiJian.class,shiJian_id);   //根据返回的id获取事件
+        time = shijian.getTime();
        addAlarmClock = (ImageButton)findViewById(R.id.addAlarmClockInChaKanLayout);    //活动界面里的的闹钟
         addAlbum = (ImageButton)findViewById(R.id.addAlbumInChaKanLayout);    //活动界面的相册控件
         editTextBiaoTi.setText(shijian.getBiaoti());              //输出获得的标题

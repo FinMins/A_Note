@@ -1,19 +1,15 @@
 package com.example.finmins.materialtest;
 import android.content.Context;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.swipe.SwipeLayout;
-
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 
 import java.util.List;
@@ -132,9 +128,9 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
                  itemViewHold. finish.setText("未完成");
              }
               itemViewHold.biaoti.setText(shijian.getBiaoti());
-              itemViewHold.year.setText(String.valueOf(shijian.getYear()) + "/");
-              itemViewHold.month.setText(String.valueOf(shijian.getMonth()) + "/");
-              itemViewHold.day.setText(String.valueOf(shijian.getDay()) + "/");
+//              itemViewHold.year.setText(String.valueOf(shijian.getYear()) + "/");
+//              itemViewHold.month.setText(String.valueOf(shijian.getMonth()) + "/");
+//              itemViewHold.day.setText(String.valueOf(shijian.getDay()) + "/");
               itemViewHold.time.setText(shijian.getTime());
           }
 

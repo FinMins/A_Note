@@ -4,46 +4,20 @@ package com.example.finmins.materialtest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.os.Bundle;
-
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Dialog;
-
-
-import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.util.Attributes;
-import com.example.finmins.materialtest.Model.MainViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-
-import org.json.JSONArray;
-import org.litepal.LitePal;
-import org.litepal.crud.DataSupport;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import android.util.DisplayMetrics;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -51,8 +25,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.daimajia.swipe.util.Attributes;
+import com.example.finmins.materialtest.Model.MainViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
-import java.io.File;
+import org.litepal.crud.DataSupport;
+
+import java.util.ArrayList;
+import java.util.List;
 public class MainActivity extends AppCompatActivity {
    private MainViewModel mainViewModel;
 
@@ -117,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
             //根据ID删除事件
             @Override
-            public void onDeleteClick(int position,int id) {
+            public void onDeleteClick(int position, final int id) {
                 final int position_item=position;   //获取listview中的位置
                 final int id_item=id;    //事件的id
 
@@ -132,9 +113,11 @@ public class MainActivity extends AppCompatActivity {
 
                     public void onClick(DialogInterface dialog, int which) {
                      //根据ID删除事件
+                        ShiJian shijian = DataSupport.find(ShiJian.class,id);
                         DataSupport.delete(ShiJian.class,id_item);
                         shiJianList.remove(position_item);
                         shiJianAdapter.notifyItemRemoved(position_item);
+                        mainViewModel.deleteShiJian(shijian.getTime());
                         Refresh();
                         Toast.makeText(MainActivity.this,"事件删除成功",Toast.LENGTH_SHORT).show();
                     }
@@ -215,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
             mainViewModel.getIsLogined();
             mainViewModel.userName.setValue(userName);
 //            System.out.println(mainViewModel.userName.toString());
-            Log.d("这是大佬的内容", mainViewModel.userName.toString());
+//            Log.d("这是大佬的内容", mainViewModel.userName.toString());
             mainViewModel.setUserEmail(userEmail);
             mainViewModel.setUserImgId(userTouXiang);
             mainViewModel.setUserPassword(userPassword);
@@ -372,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
                 float_main.setOnClickListener(new View.OnClickListener(){
                     public void onClick(View v){
                      Intent intent = new Intent(MainActivity.this,InsertActivity.class);
+                     intent.putExtra("userEmail",mainViewModel.getUserEmail().getValue());
                     startActivity(intent);
                     }
                 });

@@ -1,32 +1,18 @@
 package com.example.finmins.materialtest.Model;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.example.finmins.materialtest.HttpClientUtils;
 import com.example.finmins.materialtest.R;
 import com.example.finmins.materialtest.ShiJian;
-import com.example.finmins.materialtest.YongHu;
 
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class MainViewModel extends ViewModel {
     private MutableLiveData<Integer> isLogined;  //是否登录
@@ -36,7 +22,7 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<List<ShiJian>> shiJianList;//事件列表
     private MutableLiveData<Integer> userImgId;    //用户头像数字
     private HttpClientUtils httpClientUtils = new HttpClientUtils();   //请求
-    final String URL = "http://localhost:3000";          //本地服务器网址
+    final String URL = "http://192.168.43.61:9999";          //本地服务器网址
     private MutableLiveData<Integer> isLogin;
     private List<ShiJian> temshiJian = new ArrayList<ShiJian>();
 
@@ -99,7 +85,7 @@ public class MainViewModel extends ViewModel {
     public MutableLiveData<Integer> getIsLogined() {
         if (isLogined == null) {
             isLogined = new MutableLiveData<Integer>();
-            isLogined.setValue(0);
+            isLogined.setValue(1);
         }
         return isLogined;
     }
@@ -120,11 +106,11 @@ public class MainViewModel extends ViewModel {
     public MutableLiveData<String> getUserName() {
         if (userName == null) {
             userName = new MutableLiveData<String>();
-            userName.setValue("xxxx");
+            userName.setValue("1");
             return userName;
         }
 
-        Log.d("getusername", "进去了get");
+//        Log.d("getusername", "进去了get");
         return userName;
     }
 
@@ -143,7 +129,7 @@ public class MainViewModel extends ViewModel {
     public MutableLiveData<String> getUserEmail() {
         if (userEmail == null) {
             userEmail = new MutableLiveData<String>();
-            userEmail.setValue("xxxxx@xxx.com");
+            userEmail.setValue("1@qq.com");
             return userEmail;
         }
         return userEmail;
@@ -203,6 +189,17 @@ public class MainViewModel extends ViewModel {
         for (ShiJian shijian : shijians) {
             shiJianList.getValue().add(shijian);
         }
+
+    }
+
+
+    //删除事件
+    public void deleteShiJian(String time){
+        Log.d("gettime是", time);
+        String delete = "   {\n" +
+                "\"place\":\""+time+"\"\n" +
+                "}\n  ";
+        httpClientUtils.sendPostByOkHttp(URL+"/shijian/delete",delete);
 
     }
 }

@@ -1,8 +1,5 @@
 package com.example.finmins.materialtest;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,14 +7,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.finmins.materialtest.Model.LoginViewModel;
 import com.example.finmins.materialtest.Model.MainViewModel;
 
-import org.json.JSONArray;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -38,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private  List<Group> groupList = new ArrayList<Group>();
     private  List<ShiJian> shiJianList = new ArrayList<ShiJian>();
     private  List<ShiJian> addshiJianList = new ArrayList<ShiJian>();
-
+    private  final  String URL = "http://192.168.1.1:9999";
    private MainViewModel mainViewModel  = new MainViewModel();        //    loginiemodel
       private   HttpClientUtils httpClientUtils; //   请求类
     private Integer userImgID ;   //用户随机的头像ID。
@@ -74,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
                            "    \"mingzi\": \""+userName+"\",\n" +
                            "    \"password\": \""+userPassword+"\"\n" +
                            "}\n}";
-                   String response =   httpClientUtils.sendPostByOkHttp(" http://172.18.95.221:9999/yonghu/insert",test);
+                   String response =   httpClientUtils.sendPostByOkHttp(URL+"/yonghu/insert",test);
                     Log.d("注册响应", response);
                     JSONObject jb = JSON.parseObject(response);
 //                    String isSuccess = jb.getString("msg");

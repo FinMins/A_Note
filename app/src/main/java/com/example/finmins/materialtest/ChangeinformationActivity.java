@@ -1,8 +1,5 @@
 package com.example.finmins.materialtest;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,10 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.finmins.materialtest.Model.ChangeInforViewModel;
-import com.example.finmins.materialtest.Model.MainViewModel;
 
 public class ChangeinformationActivity extends AppCompatActivity {
 //    private int ChangeImage;  //我的头像
@@ -30,6 +27,7 @@ public class ChangeinformationActivity extends AppCompatActivity {
     private String username;      //修改的名字
     private String userpswd;     //修改的密码
     private String useremail;     //用户邮箱
+    private  final  String URL = "http://192.168.1.1:9999";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +51,7 @@ public class ChangeinformationActivity extends AppCompatActivity {
                                 "    \"password\":\""+userpswd+"\",\n" +
                                 "    \"mingzi\":\""+username+"\"\n" +
                                 "}\n";
-                        String response =    httpClientUtils.sendPostByOkHttp("http://172.18.95.221:9999/yonghu/update",requesbody);
+                        String response =    httpClientUtils.sendPostByOkHttp(URL+"/yonghu/update",requesbody);
                         Log.d("请求返回", response);
                         JSONObject jb = JSON.parseObject(response);
                        String isSuccess = jb.getString("msg");

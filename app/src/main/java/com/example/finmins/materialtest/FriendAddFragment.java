@@ -1,15 +1,7 @@
 package com.example.finmins.materialtest;
 
 
-import android.app.VoiceInteractor;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.example.finmins.materialtest.Model.FriendViewModel;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import net.sf.json.JSONObject;
+import com.example.finmins.materialtest.Model.FriendViewModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,12 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+//import net.sf.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.

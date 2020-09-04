@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.PermissionInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,19 +19,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-
- import androidx.appcompat.widget.Toolbar;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -41,25 +30,28 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.baidu.location.BDAbstractLocationListener;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.example.finmins.materialtest.Model.MainViewModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class InsertActivity extends AppCompatActivity {
 //    public LocationClient mLocationClient ;
@@ -95,10 +87,11 @@ public AMapLocationClient mLocationClient ;
     private Uri soundUri ;           //录音的路径
     private Button playSoundRecoder ;     //播放录音按钮
     private String soundString ;
+    private String userEmail;   //用户邮箱
     private String soundName;     //录音名字加后缀
-    private MainViewModel mainViewModel ; //主model
    private  AMapLocationClientOption mLocationClientOption    ;
-
+   private HttpClientUtils httpClientUtils = new HttpClientUtils();
+   private  final  String  URL = "http://192.168.43.61:9999";
 
 
 
@@ -263,6 +256,10 @@ public AMapLocationClient mLocationClient ;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
+        Intent intent =getIntent();
+        userEmail = intent.getStringExtra("userEmail");
+
+
 //百度
 //        mLocationClient = new LocationClient(getApplicationContext());
 //        mLocationClient.registerLocationListener(new MyLocationListener());
@@ -486,17 +483,31 @@ public AMapLocationClient mLocationClient ;
                     ShiJian shijian =new ShiJian();
                     shijian.setBiaoti(biaoti.getText().toString());
                     shijian.setNeirong(neirong.getText().toString());
-                    shijian.setYear(Calendar.getInstance().get(Calendar.YEAR));
-                    shijian.setMonth(Calendar.getInstance().get(Calendar.MONTH)+1);
-                    shijian.setDay(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                    SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    dff.setTimeZone(TimeZone.getTimeZone("GMT+08"));
+                    String ee = dff.format(new Date());
+//                    Time t = new Time("GMT+8");
+//                     int year =   Calendar.getInstance().get(Calendar.YEAR);
+//                     int month =   Calendar.getInstance().get(Calendar.MONTH)+1;
+//                    int day =    Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+//                    int hour =    Calendar.getInstance().HOUR_OF_DAY;
+//                    int minute = Calendar.getInstance().MINUTE;
+//                    int second = Calendar.getInstance().SECOND;
+//                    int year =t.year;
+//                    int month =t.month+1;
+//                    int day =t.monthDay;
+//                    int hour =t.hour;
+//                    int minute =t.minute;
+//                    int second =t.second;
+//                    String time = year+"/"+month+"/"+day+"/"+hour+"/"+minute+"/"+second+city+"/"+streetNmae;
+//                    String time = year+"/"+month+"/"+day;/
+                    String time =  ee+"/"+city+" "+streetNmae;
+//                    shijian.setYear( year  );
+//                    shijian.setMonth(month);
+//                    shijian.setDay(  day);
                     shijian.setTime(
-                            city+"市"+streetNmae
-                            /*
-                            String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) +"时"+
-                            String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) )+"分"+
-                            String.valueOf(Calendar.getInstance().get(Calendar.SECOND))+"秒"
-
-                             */
+//                            city+"市"+streetNmae
+                          time
                     );
                     shijian.setImgId(0);
                     if(soundString != null){
@@ -507,6 +518,7 @@ public AMapLocationClient mLocationClient ;
                         shijian.setPhoto(images);
                     }
                    if( shijian.save()){
+                       insertShijanInServer(biaoti.getText().toString(),neirong.getText().toString(),time,images );
                        Toast.makeText(InsertActivity.this,"事件添加成功！",Toast.LENGTH_SHORT).show();
                        if(isAlarm==1)
                            addAlarm();
@@ -521,6 +533,20 @@ public AMapLocationClient mLocationClient ;
         });
 
 
+    }
+
+
+    private  int insertShijanInServer(String biaoti,String neirong,String time,byte[] photo){
+   String  insert =     "{\n" +
+           "\"youxiang\":\""+userEmail+"\",\n" +
+           "\"biaoti\":\""+biaoti+"\",\n" +
+           "\"neirong\":\""+neirong+"。\",\n" +
+           "\"place\":\""+time+"\",\n" +
+           "\"photo\":\""+photo+"\"\n" +
+           "}";
+//        Log.d(TAG, "insertShijanInServer: ");
+           httpClientUtils.sendPostByOkHttp(URL+"/shijian/insert",insert);
+           return 1;
     }
 
     private void requestLocation(){
@@ -556,7 +582,9 @@ public AMapLocationClient mLocationClient ;
 
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
+            Log.d(TAG, "进入带定位功能了。");
             if (aMapLocation!= null) {
+
                 if (aMapLocation.getErrorCode() == 0) {
 //可在其中解析aMapLocation获取相应内容。
                     Log.d(TAG, "进到赋值语句了。");
@@ -627,8 +655,6 @@ public AMapLocationClient mLocationClient ;
         editTextPhoto=(ImageView) findViewById(R.id.editTextPhotoInInsertLayout);        //获取文本款中图片控件
         drawBoard =(ImageButton)findViewById(R.id.drawInInsertLayout);     //获取画板控件
         playSoundRecoder = (Button)findViewById(R.id.soundRecoderInInsertLayout);   //获取播放按钮.
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
 
 
 //
