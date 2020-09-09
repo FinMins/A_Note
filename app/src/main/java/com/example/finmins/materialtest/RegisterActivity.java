@@ -33,14 +33,14 @@ public class RegisterActivity extends AppCompatActivity {
     private  List<Group> groupList = new ArrayList<Group>();
     private  List<ShiJian> shiJianList = new ArrayList<ShiJian>();
     private  List<ShiJian> addshiJianList = new ArrayList<ShiJian>();
-    private  final  String URL = "http://192.168.1.1:9999";
+    private  final  String URL = "http://192.168.43.61:9999";
    private MainViewModel mainViewModel  = new MainViewModel();        //    loginiemodel
       private   HttpClientUtils httpClientUtils; //   请求类
     private Integer userImgID ;   //用户随机的头像ID。
     private Random randomImgInt ;    //随机生成数
 
 
-    Random r = new Random(1);
+//    Random r = new Random(1);
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,27 +58,23 @@ public class RegisterActivity extends AppCompatActivity {
                     //验证已过，开始发注册给后台
                  //把Json 包装成数据
                     Log.d("进入到注册响应了啊，内容为", userEmail+userPassword+userName+userImgID);
-                 //   YongHu yongHu = new YongHu(userImgID,userEmail,userName,userPassword);
-                 //   String jsonOutput = JSON.toJSONString(yongHu);
-                //    Log.d("注册响应", jsonOutput);
 
-               //    String  aa = "{ \"youxiang \":\"1@qq.com\",\"mingzi\":\"1\",\"password\":\"123213\",\"touxiang \":\"2131230901\"}";
-                   String test = "{\n" +
+                   String request = "{\n" +
                            "    \"touxiang\": \""+userImgID.toString()+"\",\n" +
                            "    \"youxiang\": \""+userEmail+"\",\n" +
                            "    \"mingzi\": \""+userName+"\",\n" +
                            "    \"password\": \""+userPassword+"\"\n" +
-                           "}\n}";
-                   String response =   httpClientUtils.sendPostByOkHttp(URL+"/yonghu/insert",test);
-                    Log.d("注册响应", response);
+                           "}\n";
+                   String response =   httpClientUtils.sendPostByOkHttp(URL+"/yonghu/insert",request);
+//                    Log.d("注册响应", response);
                     JSONObject jb = JSON.parseObject(response);
-//                    String isSuccess = jb.getString("msg");
-//                    if(isSuccess.equals("success")){
-//                        Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-//                    }
-//                    else{
-//                        Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
-//                    }
+                  String isSuccess = jb.getString("msg");
+                  if(isSuccess.equals("success")){
+                      Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                  }
+                  else{
+                      Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
+                  }
 
                     //请求响应返回类型为1，则退出当前界面，返回登录界面。
                 finish();
@@ -113,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
                 userImgID = R.drawable.touxiang4;
                 break;
             default:
-                 userImgID = R.drawable.touxiang1;
+                 userImgID = R.drawable.touxiang2;
 
         }
 
@@ -186,7 +182,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerEmail = findViewById(R.id.registEmail);
 //         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         httpClientUtils = new HttpClientUtils();
-        randomImgInt = new Random(1);
+        randomImgInt = new Random();
          userImgID = randomImgInt.nextInt(4);
          setImgId(userImgID);     //随机好用户的头像
 

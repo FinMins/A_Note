@@ -6,7 +6,7 @@
     app:startDestination="@id/friendnav">
     <fragment
         android:id="@+id/friendnav"
-        android:name="com.example.finmins.materialtest.friendHostFragment"
+        android:name="com.example.finmins.materialtest.FriendHostFragment"
         android:label="fragment_friend_host"
         tools:layout="@layout/fragment_friend_host" >
         <action

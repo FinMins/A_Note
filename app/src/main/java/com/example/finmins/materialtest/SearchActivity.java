@@ -2,16 +2,7 @@ package com.example.finmins.materialtest;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +10,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daimajia.swipe.util.Attributes;
 
@@ -83,7 +80,7 @@ public class SearchActivity extends AppCompatActivity {
 
             //根据ID进入事件具体内容
             @Override
-            public void onItemClick(View view, int position, int id) {
+            public void onItemClick(View view, int position, int id,ShiJian shiJian) {
                 //创建对应的intent
                 Intent intent = new Intent(SearchActivity.this,ChaKanActivity.class);
                 intent.putExtra("ids",id);
@@ -93,7 +90,7 @@ public class SearchActivity extends AppCompatActivity {
 
             //根据ID删除事件
             @Override
-            public void onDeleteClick(int position,int id) {
+            public void onDeleteClick(int position,int id,String time) {
                 final int position_item=position;   //获取listview中的位置
                 final int id_item=id;    //事件的id
 

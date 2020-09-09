@@ -2,15 +2,11 @@ package com.example.finmins.materialtest;
 
 import android.util.Log;
 
-
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -232,11 +228,12 @@ public class HttpClientUtils {
                    Request request = new Request.Builder()
                            .url(requestUrl)
                            .post(RequestBody .create(requestJsonBody,mediaType)).build();
-                   Response response = okHttpClient.newCall(request).execute();
+                      Response response = okHttpClient.newCall(request).execute();
                    responseByOkhttp = response.body().string();
                    Log.d("okhttp返回内容", responseByOkhttp);
                }catch (Exception e){
-             responseByOkhttp = null;
+                    responseByOkhttp = null;
+                   Log.d("okhttp返回内容","请求响应错误");
                }
            }
        });

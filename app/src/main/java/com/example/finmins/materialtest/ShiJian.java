@@ -2,7 +2,6 @@ package com.example.finmins.materialtest;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import org.litepal.crud.DataSupport;
 
@@ -35,7 +34,7 @@ public class ShiJian extends DataSupport {
     }
     public void setPhoto(byte[] photo){
         this.photo=photo;
-        Log.d(TAG,"Testshijan里photo为"+ String.valueOf(photo));
+//        Log.d(TAG,"Testshijan里photo为"+ String.valueOf(photo));
     }
 
     //设置ID
@@ -116,6 +115,10 @@ public class ShiJian extends DataSupport {
 
     public int get_imgId(){
         return this.imgId;
+    }
+
+    public String getPhotoString(){
+        return photo.toString();
     }
 
     //获取图片

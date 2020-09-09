@@ -16,7 +16,7 @@ public class LoginViewModel extends ViewModel {
    public String userPassword; //用户密码
    public String userName ; //用户名字
     private HttpClientUtils httpClientUtils = new HttpClientUtils();   //请求
-    final private   String  URL = "http://localhost:3000" ;          //本地服务器网址
+    final String URL = "http://192.168.43.61:9999" ;          //本地服务器网址
     private MutableLiveData<Integer> isLogin ;
 
     //设置登录状态
@@ -46,6 +46,7 @@ public class LoginViewModel extends ViewModel {
             userImage = jb.getInteger("touxiang");
              userName = jb.getString("mingzi");
             userPassword = jb.getString("password");
+//            jb.getInnerMap(
 //            setUserInf(youxiang,touxiang,mingzi);
 //            Log.d("取出邮箱", youxiang);
            Log.d("取出名字", userName);

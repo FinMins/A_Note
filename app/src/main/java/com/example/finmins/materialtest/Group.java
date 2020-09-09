@@ -11,9 +11,10 @@ public class Group {
     @JSONField(name = "GROUP VIP EMAIL")
     private String groupVipEmail ;//群管理员邮箱
 
-    public Group(int id ,String name ){
+    public Group(int id ,String name,String groupVipEmail){
         this.groupImgId =id;
         this.groupName = name;
+        this.groupVipEmail = groupVipEmail;
     }
 
 //设置群邮箱

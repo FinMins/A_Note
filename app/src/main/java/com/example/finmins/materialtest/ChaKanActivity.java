@@ -36,8 +36,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import org.litepal.crud.DataSupport;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,7 +68,9 @@ public class ChaKanActivity extends AppCompatActivity {
     //private ImageView myphoto;    //事件的图片
     private Bitmap bitmap;        //图片的转换bitmap形式
     private byte[] imagesByPhoto = new byte[1024];    //图片的转换二进制形式
-    private ShiJian shijian;        //事件
+//    private ShiJian shijian;        //事件
+    private String  biaoti  ;
+    private String neirong   ;
    private  ImageButton drawBoard;     //画板控件
     private Button playSoundRecorder ;    //播放录音控件
     private String soundRecorderPath;    //录音路径；
@@ -457,32 +457,33 @@ public class ChaKanActivity extends AppCompatActivity {
         //从上一个intent获取位置和id,,两个都默认为1
         positions =intent.getIntExtra("positions",1);
         shiJian_id = intent.getIntExtra("ids",1);
-
+        biaoti = intent.getStringExtra("biaoti");
+        neirong= intent.getStringExtra("neirong");
         isChangedShiJian=(ImageButton)findViewById(R.id.isChangedShiJianInChaKanLayout);      //活动里的修改按钮控件
         editTextPhoto= (ImageView)findViewById(R.id.editTextPhotoInChaKanLayout);   //获取文本里的图片控件
         editTextBiaoTi=(EditText)findViewById(R.id.editTextBiaotiInChaKanLayout);   //获取事件里的标题
         editTextNeiRong=(EditText)findViewById(R.id.editTextNeirongInChaKanLayout);   //获取时间里的内容控件
        addSoundRecording=(ImageButton)findViewById(R.id.addSoundRecordingInChaKanLayout);    // 活动界面里的语音控件
-        shijian=DataSupport.find(ShiJian.class,shiJian_id);   //根据返回的id获取事件
-        time = shijian.getTime();
+//        shijian= DataSupport.find(ShiJian.class,shiJian_id);   //根据返回的id获取事件
+        time = intent.getStringExtra("time");
        addAlarmClock = (ImageButton)findViewById(R.id.addAlarmClockInChaKanLayout);    //活动界面里的的闹钟
         addAlbum = (ImageButton)findViewById(R.id.addAlbumInChaKanLayout);    //活动界面的相册控件
-        editTextBiaoTi.setText(shijian.getBiaoti());              //输出获得的标题
-        editTextNeiRong.setText(shijian.getNeirong());        //输出获得的内容
+        editTextBiaoTi.setText(biaoti);              //输出获得的标题
+        editTextNeiRong.setText(neirong);        //输出获得的内容
         addCream=(ImageButton)findViewById(R.id.addCameraInChaKanLayout);          //获取活动里的相机控件
        drawBoard = (ImageButton)findViewById(R.id.drawInChaKanLayout);    //获取画板控件
         playSoundRecorder = (Button)findViewById(R.id.soundRecoderInChaKanLayout);  //获取播放录音控件
         //从数据库里获取图片
-        if(shijian.getPhoto()!=null)
-        {
-            Log.d(TAG, "不为空");
-            editTextPhoto.setImageBitmap(shijian.getPhoto());
-          imagesByPhoto = img(shijian.getPhoto());
-        }
-        if(shijian.getSoundRecorderPath()!=null){
-            playSoundRecorder.setVisibility(View.VISIBLE);
-            soundRecorderPath = shijian.getSoundRecorderPath();
-        }
+//        if(shijian.getPhoto()!=null)
+//        {
+//            Log.d(TAG, "不为空");
+//            editTextPhoto.setImageBitmap(shijian.getPhoto());
+//          imagesByPhoto = img(shijian.getPhoto());
+//        }
+//        if(shijian.getSoundRecorderPath()!=null){
+//            playSoundRecorder.setVisibility(View.VISIBLE);
+//            soundRecorderPath = shijian.getSoundRecorderPath();
+//        }
         dbHelper=new MyDatabaseHelper(this,"ShiJian.db",null,1);  //创建事件数据库
     }
 

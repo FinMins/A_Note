@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +27,16 @@ public class ShareShiJianAdapter extends RecyclerView.Adapter<ShareShiJianAdapte
     private  List<ShiJian> allShiJian ;
     private   Context context;
     private FriendViewModel friendViewModel;
-    public  ShareShiJianAdapter(Context context, List<ShiJian> shiJians, FriendViewModel friendViewModel1){
+    private String userEmail ;
+    private String friendEmail;
+    private final  String URL= "http://192.168.43.61:9999";
+    private HttpClientUtils httpClientUtils = new HttpClientUtils();
+    public  ShareShiJianAdapter(Context context, List<ShiJian> shiJians, FriendViewModel friendViewModel1,String useremail,String friendEmail){
         this.context=context;
         this.allShiJian = shiJians;
         this.friendViewModel = friendViewModel1;
+        this.userEmail = useremail;
+        this.friendEmail = friendEmail ;
     }
 
     @NonNull
@@ -55,18 +60,17 @@ public class ShareShiJianAdapter extends RecyclerView.Adapter<ShareShiJianAdapte
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //分享逻辑
+                        String request = " {\n" +
+                                "\"youxiang\":\""+ friendEmail+"\",\n" +
+                                "\"biaoti\":\""+"来自"+ userEmail+":"+shijian.getBiaoti()+"\",\n" +    //这里可能出错
+                                "\"neirong\":\""+shijian.getNeirong()+"\",\n" +
+                                "\"place\":\""+shijian.getTime()+"\",\n" +
+                                "\"photo\":\""+shijian.getPhoto()+"\",\n" +
+                                "\"finished\":\"0\"\n" +
+                                "}";
 
-                    if(     friendViewModel.requestShareShiJian( shijian)==1)
-                    {//发送成功
-
-                    }else {
-//                        发送失败
-
-                    }
-                        ;
-
-
-
+                        httpClientUtils.sendPostByOkHttp(URL+"/shijian/insert",request);
+                        Toast.makeText(context, "分享成功！", Toast.LENGTH_SHORT).show();
                     }
                 });
                 //点击否不做任何修改
@@ -99,7 +103,6 @@ public class ShareShiJianAdapter extends RecyclerView.Adapter<ShareShiJianAdapte
 
 
     static class ShareShiJianHolder extends RecyclerView.ViewHolder{
-
       TextView shareShiJianBiaoti;
       TextView shareShiJianTime;
         public ShareShiJianHolder(@NonNull View itemView){

@@ -1,4 +1,5 @@
 package com.example.finmins.materialtest;
+
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -42,6 +43,7 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -118,14 +120,14 @@ public AMapLocationClient mLocationClient ;
                         e.printStackTrace();
                     }
                 }
-                break;
+//                break;
             case CHOOSE_PHOTO:
                 if (resultCode == RESULT_OK) {
                     //判断手机系统版本号
                     if (Build.VERSION.SDK_INT >= 19) {
                         //4.4及以上系统使用这个方法处理图片
                         handleImageOnKitKat(data);
-                        Log.d(TAG, "在这444");
+//                        Log.d(TAG, "在这444");
                     } else {
                         //4.4以下系统使用这个方法处理图片
                         handleImageOnKitKat(data);
@@ -483,9 +485,11 @@ public AMapLocationClient mLocationClient ;
                     ShiJian shijian =new ShiJian();
                     shijian.setBiaoti(biaoti.getText().toString());
                     shijian.setNeirong(neirong.getText().toString());
+
                     SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     dff.setTimeZone(TimeZone.getTimeZone("GMT+08"));
                     String ee = dff.format(new Date());
+
 //                    Time t = new Time("GMT+8");
 //                     int year =   Calendar.getInstance().get(Calendar.YEAR);
 //                     int month =   Calendar.getInstance().get(Calendar.MONTH)+1;
@@ -518,7 +522,7 @@ public AMapLocationClient mLocationClient ;
                         shijian.setPhoto(images);
                     }
                    if( shijian.save()){
-                       insertShijanInServer(biaoti.getText().toString(),neirong.getText().toString(),time,images );
+                       insertShijianInServer(biaoti.getText().toString(),neirong.getText().toString(),time,images );
                        Toast.makeText(InsertActivity.this,"事件添加成功！",Toast.LENGTH_SHORT).show();
                        if(isAlarm==1)
                            addAlarm();
@@ -536,14 +540,30 @@ public AMapLocationClient mLocationClient ;
     }
 
 
-    private  int insertShijanInServer(String biaoti,String neirong,String time,byte[] photo){
-   String  insert =     "{\n" +
-           "\"youxiang\":\""+userEmail+"\",\n" +
-           "\"biaoti\":\""+biaoti+"\",\n" +
-           "\"neirong\":\""+neirong+"。\",\n" +
-           "\"place\":\""+time+"\",\n" +
-           "\"photo\":\""+photo+"\"\n" +
-           "}";
+    private  int insertShijianInServer(String biaoti,String neirong,String time,byte[] photo){
+//         String byteString = new String(photo);
+        String byteString = String.valueOf(photo);
+        Log.d("这是原生TOstring插入时的图片字符串", byteString);
+//   String  insert =    "{\n" +
+//           "\"youxiang\":\""+userEmail+"\",\n" +
+//           "\"biaoti\":\""+biaoti+"\",\n" +
+//           "\"neirong\":\""+neirong+"。\",\n" +
+//           "\"place\":\""+time+"\",\n" +
+//           "\"photo\":\""+byteString+"\"\n" +
+//           "}";
+        String insert = " {\n" +
+                "\"youxiang\":\""+userEmail+"\",\n" +
+                "\"biaoti\":\""+biaoti+"\",\n" +
+                "\"neirong\":\""+neirong+"\",\n" +
+                "\"place\":\""+time+"\",\n" +
+                "\"photo\":\""+byteString+"\",\n" +
+                "\"finished\":\"0\"\n" +
+                "}";
+
+        Log.d("insert:email", userEmail);
+        Log.d("insert:biaoti", biaoti);
+        Log.d("insert:neirong", neirong);
+        Log.d("inser:time", time);
 //        Log.d(TAG, "insertShijanInServer: ");
            httpClientUtils.sendPostByOkHttp(URL+"/shijian/insert",insert);
            return 1;
@@ -717,6 +737,23 @@ public AMapLocationClient mLocationClient ;
         Bitmap bitmapTmp = Bitmap.createBitmap( bitmap, 0, 0,  bitmap.getWidth(), bitmap.getHeight(), matrix, false);
         //将图片旋转xx度
         matrix.setRotate(rangle);
-        return Bitmap.createBitmap( bitmapTmp, 0, 0,  bitmapTmp.getWidth(), bitmapTmp.getHeight(), matrix, false);
+        return compressImage( Bitmap.createBitmap( bitmapTmp, 0, 0,  bitmapTmp.getWidth(), bitmapTmp.getHeight(), matrix, false));
+
     }
+
+    public static Bitmap compressImage(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 1, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 90;
+        while (baos.toByteArray().length / 1024 > 100) { // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            baos.reset(); // 重置baos即清空baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中
+            options -= 10;// 每次都减少10
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());// 把压缩后的数据baos存放到ByteArrayInputStream中
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);// 把ByteArrayInputStream数据生成图片
+        return bitmap;
+    }
+
+
 }

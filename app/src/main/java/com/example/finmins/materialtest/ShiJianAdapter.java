@@ -96,7 +96,7 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
                       public void onClick(View v) {
                           itemViewHold.swipeLayout.close();//隐藏侧滑菜单区域
                           int position = itemViewHold.getLayoutPosition();
-                          mOnItemClickLitener.onItemClick(itemViewHold.swipeLayout, position,id);
+                          mOnItemClickLitener.onItemClick(itemViewHold.swipeLayout, position,id,shijian);
                       }
                   });
 
@@ -105,7 +105,7 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
                       public void onClick(View v) {
                           itemViewHold.swipeLayout.close();
                           int position = itemViewHold.getLayoutPosition();
-                          mOnItemClickLitener.onDeleteClick(position,id);
+                          mOnItemClickLitener.onDeleteClick(position,id,shijian.getTime());
                       }
                   });
                   //
@@ -140,12 +140,12 @@ public class ShiJianAdapter extends RecyclerSwipeAdapter<ShiJianAdapter. ViewHol
 
     public interface OnItemClickLitener
     {
-        void onItemClick(View view, int position,int id);
+        void onItemClick(View view, int position,int id,ShiJian shiJian);
        void onSetImgId(int position,int id,ShiJian shijian);
         /**置顶*/
       //  void onTopClick(int position);
         /**删除*/
-        void onDeleteClick(int position,int id);
+        void onDeleteClick(int position,int id,String time);
     }
 
     private OnItemClickLitener mOnItemClickLitener;

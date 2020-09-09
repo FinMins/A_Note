@@ -16,19 +16,20 @@ public class MemberInGroup {
 //    private int mannerIsVip ;   //成员是否是管理员
     @JSONField(name = "FINIFSHED DATA")
     private String finishedDate;    //成员完成年份;
+    private int  finishedImg  ; //是否完成
       //成员能完成填
 //    private int isSelf ; //是否是自己
 
 
     //构造函数（id,名字,是否完成,完成年，完成月，完成天）
-    public  MemberInGroup(String groupName,String email,int imgid,String name ,String finishedDate){
+    public  MemberInGroup(String groupName,String email,int imgid,String name ,String finishedDate,int isfinished){
 //        this.mannerIsVip=mannerIsVip;
         this.groupName = groupName;
         this.mannerEmail = email;
         this.mannerName=name;
 //        this.mannerIsFinished=mannerIsFinished;
         this.finishedDate=finishedDate;
-
+        this.finishedImg = isfinished;
         this.mannerImgId=imgid;
 //        this.isSelf = isSelf;
     }
@@ -59,6 +60,11 @@ public class MemberInGroup {
     //设置成员头像
     public void setMannerImgId(int id ){
         this.mannerImgId = id ;
+    }
+
+    //设置成员完成
+    public void setMannerfinished(int finished){
+        this.finishedImg= finished ;
     }
     //设置成员名字
     public void setMannerName(String name ){
@@ -94,6 +100,11 @@ public class MemberInGroup {
     //返回成员头像
     public  int getMannerImgId(){
         return  this.mannerImgId;
+    }
+
+    //返回成员是否打卡
+    public  int getMannerfinishedImg(){
+        return  this.finishedImg;
     }
     //返回成员名字
     public String getMannerName(){

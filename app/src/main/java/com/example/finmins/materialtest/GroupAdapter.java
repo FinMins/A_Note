@@ -13,24 +13,20 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.example.finmins.materialtest.Group;
-import com.example.finmins.materialtest.MemberInGroup;
-import com.example.finmins.materialtest.Model.GroupViewModel;
-import com.example.finmins.materialtest.R;
-
 import java.util.List;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder>
 {
     private List<Group> mGroup;
     private Context context;
-    private GroupViewModel groupViewModel;
+//    private GroupViewModel groupViewModel;
+    private String userEmail;
 
-    public  GroupAdapter(Context context, List<Group> group, GroupViewModel groupViewModel1){
+    public  GroupAdapter(Context context, List<Group> group,String userEmail){
         this.context=context;
         this.mGroup=group ;
-        this.groupViewModel = groupViewModel1;
+//        this.groupViewModel = groupViewModel1;
+        this.userEmail =userEmail;
     }
     static class  ViewHolder extends RecyclerView.ViewHolder{
         ImageView groupImg ;   //群头像
@@ -55,10 +51,11 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder>
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                Group group = mGroup.get(position+1);
+                Group group = mGroup.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putString("groupName",group.getGroupName());
                 bundle.putString("VIPemail",group.getGroupVipEmail());
+                bundle.putString("selfEnami",userEmail);
                 NavController Controller = Navigation.findNavController(v);
                 Controller.navigate(R.id.action_group_host_to_group_inner,bundle);
             }

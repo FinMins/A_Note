@@ -1,24 +1,20 @@
 package com.example.finmins.materialtest;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.example.finmins.materialtest.Model.LoginViewModel;
-import com.example.finmins.materialtest.Model.MainViewModel;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -29,8 +25,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button registButton;   //注册按钮
     private String password ;  //登录密码
     private String mingzi ;  //用户名字
-    private int touxiang  ; //用户头像
+    private String touxiang  ; //用户头像
     private String  email;   //邮箱
+    private final  String URL= "http://192.168.43.61:9999";
     private HttpClientUtils httpClientUtils = new HttpClientUtils();
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,16 +59,15 @@ public class LoginActivity extends AppCompatActivity {
            //  判断输入框是否为空
               if(  checkInput()){
                   //不是则把密码和用户名传进去判断能否登陆
-                if(  loginViewModel.login(loginUserName.getText().toString(),loginUserPassowrd.getText().toString())==1){
+                if(  login(loginUserName.getText().toString(),loginUserPassowrd.getText().toString())==1){
                     //密码邮箱正确。
                        //把得到的头像和名字传回去
-                    password = loginViewModel.userPassword;
-                    mingzi = loginViewModel.userName;
-                    touxiang = loginViewModel.userImage;
-                    email  =  loginViewModel.userEmail;
+//                    password = loginViewModel.userPassword;
+//                    mingzi   = loginViewModel.userName;
+//                   touxiang = loginViewModel.userImage;
+//                    email    =  loginViewModel.userEmail;
 
-                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                    intent.putExtra("loginPassword",password);
+                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                     intent.putExtra("loginMingZi",mingzi);
                     intent.putExtra("loginTouXiang",touxiang);
                     intent.putExtra("loginYouXiang",email);
@@ -108,6 +104,30 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
+
+    public int login(final String userEmailtem, final String passWord ){
+        final String requesbody = " { \"youxiang\":\""+userEmailtem+"\", \"password\":\""+passWord+"\" }";
+        String a = httpClientUtils.sendPostByOkHttp(URL+"/yonghu/login",requesbody);
+        if(a !=null){
+//            setIsLogined(1);
+            JSONObject jb = JSON.parseObject(a);
+            email = jb.getString("youxiang");
+             touxiang = jb.getString("touxiang");
+                 mingzi    = jb.getString("mingzi");
+//                       email    =     String  userPassword = jb.getString("password");
+//            jb.getInnerMap(
+//            setUserInf(youxiang,touxiang,mingzi);
+//            Log.d("取出邮箱", youxiang);
+//            Log.d("取出名字", userName);
+            Log.d("取出头像", touxiang);
+            return 1;
+        }
+        return 0;
+    }
+
+
+
 
     //初始化元素
     private void init(){

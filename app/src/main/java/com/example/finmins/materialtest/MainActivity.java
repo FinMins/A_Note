@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,27 +18,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.daimajia.swipe.util.Attributes;
-import com.example.finmins.materialtest.Model.MainViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 public class MainActivity extends AppCompatActivity {
-   private MainViewModel mainViewModel;
+//   private MainViewModel mainViewModel;
 
     private  static  final  Integer NO_LOGINED = 0   ;//未登录
 
     private  static  final  Integer IS_LOGINED = 1   ;//已登录
+    final String URL = "http://192.168.43.61:9999";          //本地服务器网址
 
     private DrawerLayout mDrawerLayout;   //侧滑栏
 
@@ -57,11 +55,18 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView isFinishedImage;    //是否完成的图片
 
-    private ImageButton userImage ;   //用户头像
+//    private ImageButton userImage ;   //用户头像
 
    private TextView userXingming ;     //用户名字
 
    private TextView user_Mail;       //用户邮箱
+
+    private String userSelfEmail  ;   //用户登录后的邮箱
+
+    private String userLoginedImg  ;
+    private String userName ;
+
+    private Integer isLogined =  0 ;
 
   private HttpClientUtils httpClientUtils = new HttpClientUtils() ;    //请求组件
 
@@ -72,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     //将数据库的数据读取到listView中,这是唯一的main获取数据库的入口
     private void initShijian(){
-        shiJianList= mainViewModel.getShiJianList().getValue();
+         setShiJianList();
     }
 
   //覆写重新加载函数
@@ -88,17 +93,20 @@ public class MainActivity extends AppCompatActivity {
 
             //根据ID进入事件具体内容
             @Override
-            public void onItemClick(View view, int position,int id) {
+            public void onItemClick(View view, int position,int id,ShiJian shiJian) {
                 //创建对应的intent
                 Intent intent = new Intent(MainActivity.this,ChaKanActivity.class);
-                intent.putExtra("ids",id);
+                intent.putExtra("biaoti",shiJian.getBiaoti());
+                intent.putExtra("neirong",shiJian.getBiaoti());
+                intent.putExtra("time", shiJian.getTime());
+//                intent.putExtra("email",userSelfEmail);
                 startActivity(intent);
             }
 
 
             //根据ID删除事件
             @Override
-            public void onDeleteClick(int position, final int id) {
+            public void onDeleteClick(int position, final int id,final  String time) {
                 final int position_item=position;   //获取listview中的位置
                 final int id_item=id;    //事件的id
 
@@ -113,11 +121,11 @@ public class MainActivity extends AppCompatActivity {
 
                     public void onClick(DialogInterface dialog, int which) {
                      //根据ID删除事件
-                        ShiJian shijian = DataSupport.find(ShiJian.class,id);
-                        DataSupport.delete(ShiJian.class,id_item);
+//                       ShiJian shijian = DataSupport.find(ShiJian.class,id);
+//                        DataSupport.delete(ShiJian.class,id_item);
                         shiJianList.remove(position_item);
                         shiJianAdapter.notifyItemRemoved(position_item);
-                        mainViewModel.deleteShiJian(shijian.getTime());
+                        deleteShiJian(time);
                         Refresh();
                         Toast.makeText(MainActivity.this,"事件删除成功",Toast.LENGTH_SHORT).show();
                     }
@@ -149,15 +157,18 @@ public class MainActivity extends AppCompatActivity {
                 //根据事件imgID设置图片并修改imgID
                 if(shijian.get_imgId()==1){
                     shijian1.setToDefault("imgId");
-                    shijian1.update(id);
+                   setFinishe("0",shijian.getTime(),userSelfEmail);
                     imageView.setImageResource(R.mipmap.yuanquan);
                     finish.setText("完成");
+                    Log.d("点击了完成", "变成未完成");
                      } else{
                     shijian1.setImgId(1);
-                    shijian1.update(id);
+                    setFinishe("1",shijian.getTime(),userSelfEmail);
                     imageView.setImageResource(R.mipmap.zhengque);
                     finish.setText("未完成");
-                        }
+                    Log.d("点击了完成", "变成已完成");
+
+                }
               //  shiJianAdapter.notifyDataSetChanged();
                 Refresh();
                 }
@@ -169,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     //下拉刷新事件
         public void Refresh(){
-            mainViewModel.getUserName();
+//            mainViewModel.getUserName();
         shiJianList.clear();
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -180,122 +191,139 @@ public class MainActivity extends AppCompatActivity {
           recyclerView.setSelected(true);
           initShijian();
         shiJianAdapter.notifyDataSetChanged();
-
         initEvents();
+
     }
+
+    private int setFinishe(String finish,String time ,String youxiang){
+        String request = " {\n" +
+                "\"finished\":\""+finish+"\",\n" +
+                "\"place\":\""+time+"\",\n" +
+                "\"youxiang\":\""+youxiang+"\"\n" +
+                "}\n";
+        String response = httpClientUtils.sendPostByOkHttp(URL+"/shijian/updatefinished",request);
+
+        return 1;
+    }
+
+
 
     private   void init(){
         Intent intent = getIntent();
-        String userName = intent.getStringExtra("loginMingZi");
-        String userEmail = intent.getStringExtra("loginYouXiang");
-        String userPassword = intent.getStringExtra("loginPassword");
-        int userTouXiang = intent.getIntExtra("loginTouXiang",0);
-        if (userName !=null){
-            mainViewModel.getUserName();
-            mainViewModel.getUserEmail();
-            mainViewModel.getuserImgId();
-            mainViewModel.getUserPassword();
-            mainViewModel.getIsLogined();
-            mainViewModel.userName.setValue(userName);
+        String userloginedName = intent.getStringExtra("loginMingZi");
+        String  userloginedEmail = intent.getStringExtra("loginYouXiang");
+        String   userloginedTouXiang =  intent.getStringExtra("loginTouXiang");
+
+        if (userloginedEmail==null||userloginedName==null||userloginedTouXiang==null){
+            userLoginedImg = String.valueOf(R.drawable.header);
+            userSelfEmail = "xxxx@qq.com";
+            userName = "未登录";
+//            mainViewModel.getUserName();
+//            mainViewModel.getUserEmail();
+//            mainViewModel.getuserImgId();
+//            mainViewModel.getUserPassword();
+//            mainViewModel.getIsLogined();
+//            mainViewModel.userName.setValue(userName);
 //            System.out.println(mainViewModel.userName.toString());
 //            Log.d("这是大佬的内容", mainViewModel.userName.toString());
-            mainViewModel.setUserEmail(userEmail);
-            mainViewModel.setUserImgId(userTouXiang);
-            mainViewModel.setUserPassword(userPassword);
-            mainViewModel.setIsLogined(1);
+//            mainViewModel.setUserEmail(userEmail);
+//            mainViewModel.setUserImgId(userTouXiang);
+//            mainViewModel.setUserPassword(userPassword);
+//            mainViewModel.setIsLogined(1);
+            touxiang.setImageResource(R.drawable.header);
+        }else{
+            Log.d("Mainactivity:从登录获取的头像字符",userloginedTouXiang );
+            Log.d("Mainactivity:从登录获取的名字",userloginedName );
+            Log.d("Mainactivity:从登录获取的邮箱",userloginedEmail );
+            userLoginedImg = userloginedTouXiang;
+            userSelfEmail = userloginedEmail;
+            userName = userloginedName;
+            touxiang.setImageResource(Integer.parseInt(userLoginedImg));
+            isLogined = IS_LOGINED;
         }
 
+        user_Mail.setText(userSelfEmail);
+        userXingming.setText(userName);
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
-               mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+//               mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        navigationView= findViewById(R.id.nav_view);
+//                //观察登录状态
+//        mainViewModel.getIsLogined().observe(this, new Observer<Integer>() {
+//            @Override
+//            public void onChanged(Integer integer) {
+//                if(integer ==1){
+//                  //登录状态从登录变成已登录
+//                  mainViewModel.setUserInf();
+//                }
+//                if(integer ==0){
+//                    //登录状态从已登录变成未登录
+////               touxiang.setImageResource(R.drawable.header);
+//////               user_Mail.setText("xxxxxx@xxxxx.com");
+//////               userXingming.setText("xxxx");
+//                    mainViewModel.setUserImgId(R.drawable.header);
+//                    mainViewModel.setUserEmail("xxxx@qq.com");
+//                    mainViewModel.getUserName();
+//                    mainViewModel.setUserName("xxxxx");
+//                }
+//            }
+//        });
+
+//                //观察用户邮箱
+//        mainViewModel.getUserEmail().observe(this, new Observer<String>() {
+//            @Override
+//            public void onChanged(String s) {
+//                Log.d("观察到了邮箱", s);
+//            user_Mail.setText(s);
+//            }
+//        });
+        //观察用户头像
+//        mainViewModel.getuserImgId().observe(this, new Observer<Integer>() {
+//            @Override
+//            public void onChanged(Integer integer) {
+//            touxiang.setImageResource(integer);
+//            }
+//        });
+        //观察用户名
+//                mainViewModel.getUserName().observe(this, new Observer<String>() {
+//                    @Override
+//                    public void onChanged(String s) {
+//                        Log.d("观察到了用户名", s);
+//                 userXingming.setText(s);
+//                        }
+//                });
+
+//             //观察事件组，如果一改变就直接把整个事件组传递给后台。
+//                 mainViewModel.getShiJianList().observe(this, new Observer<List<ShiJian>>() {
+//                   @Override
+//                 public void onChanged(List<ShiJian> s) {
+//                       Log.d(TAG, "调用了观察 ");
+//                      Refresh();
+//
+//                 }
+//                  });
+        user_Mail = navigationView.getHeaderView(0).findViewById(R.id.user_mail);
+        userXingming = navigationView.getHeaderView(0).findViewById(R.id.userXingming);
+        touxiang = navigationView.getHeaderView(0).findViewById(R.id.user_image);
                 init();
 
 
 
 
-                navigationView= findViewById(R.id.nav_view);
-
-
-
-
-
-                //观察登录状态
-        mainViewModel.getIsLogined().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if(integer ==1){
-                  //登录状态从登录变成已登录
-                  mainViewModel.setUserInf();
-                }
-                if(integer ==0){
-                    //登录状态从已登录变成未登录
-//               touxiang.setImageResource(R.drawable.header);
-////               user_Mail.setText("xxxxxx@xxxxx.com");
-////               userXingming.setText("xxxx");
-                    mainViewModel.setUserImgId(R.drawable.header);
-                    mainViewModel.setUserEmail("xxxx@qq.com");
-                    mainViewModel.getUserName();
-                    mainViewModel.setUserName("xxxxx");
-                }
-            }
-        });
-
-                //观察用户邮箱
-        mainViewModel.getUserEmail().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                Log.d("观察到了邮箱", s);
-            user_Mail.setText(s);
-            }
-        });
-        //观察用户头像
-        mainViewModel.getuserImgId().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-            touxiang.setImageResource(integer);
-            }
-        });
-                //观察用户名
-                mainViewModel.getUserName().observe(this, new Observer<String>() {
-                    @Override
-                    public void onChanged(String s) {
-                        Log.d("观察到了用户名", s);
-                 userXingming.setText(s);
-                        }
-                });
-
-             //观察事件组，如果一改变就直接把整个事件组传递给后台。
-                 mainViewModel.getShiJianList().observe(this, new Observer<List<ShiJian>>() {
-                   @Override
-                 public void onChanged(List<ShiJian> s) {
-                       Log.d(TAG, "调用了观察 ");
-                      Refresh();
-
-                 }
-                  });
-
-
-
-                user_Mail = navigationView.getHeaderView(0).findViewById(R.id.user_mail);
-                userXingming = navigationView.getHeaderView(0).findViewById(R.id.userXingming);
-                touxiang = navigationView.getHeaderView(0).findViewById(R.id.user_image);
-
+                //头像单击登录
                 touxiang.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
-                   if( mainViewModel.getIsLogined().getValue()==0){
+                   if( isLogined==NO_LOGINED){
                        Intent loginIntent = new Intent(MainActivity.this,LoginActivity.class);
                        startActivity(loginIntent);
                    }
-                   if(mainViewModel.getIsLogined().getValue() == 1){
+                   if(isLogined == IS_LOGINED){
                        //进入用户登录后的界面
                        Toast.makeText(MainActivity.this, "长按退出登录", Toast.LENGTH_SHORT).show();
                    }
@@ -308,11 +336,11 @@ public class MainActivity extends AppCompatActivity {
 
             public boolean onLongClick(View v) {
                 //没登录
-                if(mainViewModel.getIsLogined().getValue()==NO_LOGINED){
+                if(isLogined==NO_LOGINED){
                     Toast.makeText(MainActivity.this, "请登陆在尝试退出", Toast.LENGTH_SHORT).show();
                 }
                 //已登录
-                if(mainViewModel.getIsLogined().getValue()==IS_LOGINED) {
+                if(isLogined==IS_LOGINED) {
 
                     AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
                     dialog.setTitle("通知");
@@ -322,7 +350,11 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                        //退出账号
-                            mainViewModel.setIsLogined(NO_LOGINED);
+                            isLogined = NO_LOGINED;
+                            touxiang.setImageResource(R.drawable.header);
+                            user_Mail.setText("xxxx@qq.com");
+                            userXingming.setText("xxxx");
+
                         }
                     });
 
@@ -352,11 +384,17 @@ public class MainActivity extends AppCompatActivity {
 
                 //点击悬浮按钮添加事件进入InsertActivity
                 float_main = (FloatingActionButton)findViewById(R.id.float_main );
+
                 float_main.setOnClickListener(new View.OnClickListener(){
                     public void onClick(View v){
-                     Intent intent = new Intent(MainActivity.this,InsertActivity.class);
-                     intent.putExtra("userEmail",mainViewModel.getUserEmail().getValue());
-                    startActivity(intent);
+                        if (isLogined==NO_LOGINED){
+                            Toast.makeText(MainActivity.this, "请先登陆", Toast.LENGTH_SHORT).show();
+                        }
+                        if(isLogined==IS_LOGINED) {
+                            Intent intent = new Intent(MainActivity.this,InsertActivity.class);
+                            intent.putExtra("userEmail",userSelfEmail);
+                            startActivity(intent);
+                        }
                     }
                 });
                 Refresh();
@@ -369,8 +407,8 @@ public class MainActivity extends AppCompatActivity {
                  mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
                 NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
                 navView.setItemIconTintList(null);
-
                  ActionBar actionBar = getSupportActionBar();
+
                 if (actionBar !=null){
                     //侧滑栏点击按钮
                     actionBar.setDisplayHomeAsUpEnabled(true);
@@ -379,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
                     actionBar.setHomeAsUpIndicator(R.mipmap.wode);
                 }
                 //用户头像点击(暂时没有setonclick方法
-//                userImage = (ImageButton)findViewById(R.id.user_image) ;
+//              userImage = (ImageButton)findViewById(R.id.user_image) ;
 
                 /*
                 userImage.setOnClickListener(new View.OnClickListener() {
@@ -397,40 +435,60 @@ public class MainActivity extends AppCompatActivity {
                      {
                          case R.id.nav_friends:
                              //好友逻辑
-                             if (mainViewModel.getIsLogined().getValue()==NO_LOGINED){
+                             if (isLogined==NO_LOGINED){
                                  Toast.makeText(MainActivity.this, "请先登陆", Toast.LENGTH_SHORT).show();
                                  break;
                              }
-                             if(mainViewModel.getIsLogined().getValue()==IS_LOGINED) {
+                             if(isLogined==IS_LOGINED) {
                                  Intent friendIntent = new Intent(MainActivity.this, FriendsActivity.class);
                                  //把viewmodel里的用户账号传输过去
-                                 friendIntent.putExtra("userNum",mainViewModel.getUserEmail().getValue());
+                                 friendIntent.putExtra("userNum",userSelfEmail);
+                                 friendIntent.putExtra("username",userName);
+                                 friendIntent.putExtra("userloginedimg",userLoginedImg);
                                  startActivity(friendIntent);
                                  break;
                              }
                          case R.id.nav_group:
-                             if (mainViewModel.getIsLogined().getValue()==NO_LOGINED){
+                             //群
+                             if (isLogined==NO_LOGINED){
                                  Toast.makeText(MainActivity.this, "请先登陆", Toast.LENGTH_SHORT).show();
                                  break;
                              }
-                             if(mainViewModel.getIsLogined().getValue()==IS_LOGINED) {
+                             if(isLogined==IS_LOGINED) {
                             Intent groupIntent = new Intent(MainActivity.this,Groupctivity.class);
-                            groupIntent.putExtra("userEmail",mainViewModel.getUserEmail().getValue());
+                            groupIntent.putExtra("userEmail",userSelfEmail);
                             startActivity(groupIntent);
                              //群组逻辑
                                  break;
                              }
                          case R.id.nav_userdata:
                              //修改资料
-                             Intent changeInfor = new Intent(MainActivity.this,ChangeinformationActivity.class);
-                             changeInfor.putExtra("userEmail",mainViewModel.getUserEmail().getValue());
-                             startActivity(changeInfor);
-                             break;
+                             if (isLogined==NO_LOGINED){
+                                 Toast.makeText(MainActivity.this, "请先登陆", Toast.LENGTH_SHORT).show();
+                                 break;
+                             }
+                             if(isLogined==IS_LOGINED) {
+                                 Intent changeInfor = new Intent(MainActivity.this,ChangeinformationActivity.class);
+                                 Log.d("发送给修改资料的用户自己的", userSelfEmail);
+                                 changeInfor.putExtra("userEmail",userSelfEmail );
+                                 changeInfor.putExtra("userTouXiang",userLoginedImg);
+                                 startActivity(changeInfor);
+                                 break;
+                             }
+
                          case R.id.nav_bill:
                              //我的账单
-                             Intent mybill = new Intent(MainActivity.this,FinanceActivity.class);
-                             startActivity(mybill);
-                             break;
+                             if (isLogined==NO_LOGINED){
+                                 Toast.makeText(MainActivity.this, "请先登陆", Toast.LENGTH_SHORT).show();
+                                 break;
+                             }
+                             if(isLogined==IS_LOGINED) {
+                                 Intent mybill = new Intent(MainActivity.this,FinanceActivity.class);
+                                 Log.d("发送给修改资料的用户自己的", userSelfEmail);
+                                 mybill.putExtra("userEmail",userSelfEmail );
+                                 startActivity(mybill);
+                                 break;
+                             }
                      }
                     mDrawerLayout.closeDrawers();
                     return true;
@@ -466,6 +524,78 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }
+
+
+    //读取的事件暂时存在一个temshijian里。
+    private ShiJian setTempShiJian( String getBiaoTi , String getNeiRong,byte[] getPhoto,String getTime,String isfinish ){
+        ShiJian shijian = new ShiJian( );
+        shijian.setBiaoti(getBiaoTi);
+        shijian.setNeirong(getNeiRong);
+        shijian.setImgId(Integer.parseInt(isfinish));
+        shijian.setTime(getTime);
+        shijian.setPhoto(getPhoto);
+        Log.d("存在事件里的图片字符串", shijian.getPhotoString());;
+        return shijian;
+    }
+
+
+    //删除事件
+    public void deleteShiJian(String time){
+        Log.d("gettime是", time);
+        String delete = "   {\n" +
+                "\"place\":\""+time+"\"\n" +
+                "}\n  ";
+            httpClientUtils.sendPostByOkHttp(URL+"/shijian/delete",delete);
+
+    }
+
+
+    //从数据库得到事件列表
+    public void setShiJianList() {
+//        List<ShiJian> shijians = DataSupport.findAll(ShiJian.class);
+//        for (ShiJian shijian : shijians) {
+//            shiJianList.getValue().add(shijian);
+        if(!userSelfEmail.equals("xxxx@qq.com")){
+            String request= "{\n" +
+                    "\"youxiang\":\""+userSelfEmail+"\"\n" +
+                    "}" ;
+            String response =    httpClientUtils.sendPostByOkHttp(URL+"/shijian/select",request);
+            if(response!=null){
+//                JSONObject jsonObject = new JSONObject();
+                JSONArray jsonArray = JSON.parseArray(response);
+//                Log.d("这是返回的事件集合", ""+jsonArray);
+                for(int i =0;i<jsonArray.size();i++){
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    int getId = (Integer)obj.get("id");
+                    String getBiaoTi = (String)obj.get("biaoti");
+                    String getNeiRong = (String)obj.get("neirong");
+//         byte[] getPhoto = (byte[])obj.get("phot");
+                    byte[] getPhoto = new byte[1024];
+                    getPhoto =((String)obj.get("photo")).getBytes();
+//        getPhoto = Base64.getDecoder().decode((String)obj.get("photo"));
+                    String getTime = (String)obj.get("place");
+                    String getfinish = (String)obj.get("finished");
+//        Log.d("这是返回的事件集合的", getTime);
+//        Log.d("这是返回时的图片字符串", (String)obj.get("photo"));
+                    Log.d("这是tostring的图片字符串", obj.get("photo").toString());
+                    Log.d("这是原生转换的图片字符串", (String)obj.get("photo"));
+
+
+//        Log.d("这是返回的事件集合的", getTime);
+                    ShiJian temshijian = new ShiJian();
+                    temshijian =setTempShiJian(getBiaoTi,getNeiRong,getPhoto,getTime,getfinish);
+//                temshijian.save();
+//        Log.d("这是存进去的时间，判断是否为空", temshijian.getTime());     不为空
+                    shiJianList.add(temshijian);
+                }
+
+            }
+        }
+
+//        }
+    }
+
+
 
 
     }

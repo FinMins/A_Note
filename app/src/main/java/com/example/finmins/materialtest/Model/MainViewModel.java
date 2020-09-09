@@ -5,11 +5,12 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.finmins.materialtest.HttpClientUtils;
 import com.example.finmins.materialtest.R;
 import com.example.finmins.materialtest.ShiJian;
-
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,40 +28,6 @@ public class MainViewModel extends ViewModel {
     private List<ShiJian> temshiJian = new ArrayList<ShiJian>();
 
 
-//    //设置登录状态
-//    public void setIsLogin(int a  ){
-//        isLogin.setValue(a);
-//    }
-
-//
-//    //登录的请求 username,password
-////    假设验证成功返回1 ，失败返回0
-//    public int login(final String userName, final String passWord ){
-//       final String requesbody = " { \"youxiang\":\"123456@qq.com\", \"password\":\"9666\" }";
-////       final String requesbody = " { \"youxiang\":\""+userName+"\", \"password\":\""+passWord+"\" }";
-//        String a = httpClientUtils.sendPostByOkHttp("http://172.18.95.221:9999/yonghu/login",requesbody);
-//        if(a !=null){
-////            setIsLogined(1);
-//            JSONObject jb = JSON.parseObject(a);
-//            String youxiang = jb.getString("youxiang");
-//            String touxiang = jb.getString("touxiang");
-//            String mingzi = jb.getString("mingzi");
-//            String password = jb.getString("password");
-//            setUserInf(youxiang,touxiang,mingzi);
-//            Log.d("取出邮箱", youxiang);
-//            Log.d("取出名字", mingzi);
-////            Log.d("取出头像", touxiang);
-//            return 1;
-//        }
-//
-//
-//
-//
-//        return 0;
-//
-//
-//
-//    }
 
     //获取用户头像数字
     public MutableLiveData<Integer> getuserImgId() {
@@ -70,15 +37,6 @@ public class MainViewModel extends ViewModel {
         }
         return userImgId;
     }
-//
-//    //是否登录成功   login专用
-//    public MutableLiveData<Integer> getIsLogin(){
-//        if(isLogin==null) {
-//            isLogin = new MutableLiveData<Integer>();
-//            isLogin.setValue(2);
-//        }
-//        return isLogin;
-//    }
 
 
     //是否已经登录     main专用。
@@ -96,8 +54,12 @@ public class MainViewModel extends ViewModel {
         if (shiJianList == null) {
             shiJianList = new MutableLiveData<List<ShiJian>>();
             shiJianList.setValue(temshiJian);
+            Log.d("事件列表为空", "123");
+
             return shiJianList;
         }
+        Log.d("事件列表不为空", "213");
+
         setShiJianList();
         return shiJianList;
     }
@@ -110,13 +72,12 @@ public class MainViewModel extends ViewModel {
             return userName;
         }
 
-//        Log.d("getusername", "进去了get");
         return userName;
     }
 
     //获取密码
     public MutableLiveData<String> getUserPassword() {
-        if (userPassword == null) {
+        if (userPassword   == null) {
             userPassword = new MutableLiveData<String>();
             userPassword.setValue("xxxxx");
             return userPassword;
@@ -135,13 +96,6 @@ public class MainViewModel extends ViewModel {
         return userEmail;
     }
 
-    //注册用户
-    public int registerUser() {
-        String response;
-        response = httpClientUtils.send("", "", "");
-
-        return Integer.parseInt(response);
-    }
 
 
     //设置用户名
@@ -168,7 +122,7 @@ public class MainViewModel extends ViewModel {
 
     //设置头像
     public void setUserImgId(Integer imgId) {
-        Log.d("设置了头像", imgId.toString());
+//        Log.d("设置了头像", imgId.toString());
         userImgId.setValue(imgId);
     }
 
@@ -185,13 +139,57 @@ public class MainViewModel extends ViewModel {
 
     //从数据库得到事件列表
     public void setShiJianList() {
-        List<ShiJian> shijians = DataSupport.findAll(ShiJian.class);
-        for (ShiJian shijian : shijians) {
-            shiJianList.getValue().add(shijian);
-        }
+//        List<ShiJian> shijians = DataSupport.findAll(ShiJian.class);
+//        for (ShiJian shijian : shijians) {
+//            shiJianList.getValue().add(shijian);
 
+            String request= "{\n" +
+                    "\"youxiang\":\""+userEmail.getValue()+"\"\n" +
+                    "}" ;
+         String response =    httpClientUtils.sendPostByOkHttp(URL+"/shijian/select",request);
+            if(response!=null){
+//                JSONObject jsonObject = new JSONObject();
+                JSONArray jsonArray = JSON.parseArray(response);
+//                Log.d("这是返回的事件集合", ""+jsonArray);
+    for(int i =0;i<jsonArray.size();i++){
+        JSONObject obj = jsonArray.getJSONObject(i);
+         int getId = (Integer)obj.get("id");
+         String getBiaoTi = (String)obj.get("biaoti");
+         String getNeiRong = (String)obj.get("neirong");
+//         byte[] getPhoto = (byte[])obj.get("phot");
+        byte[] getPhoto = new byte[1024];
+       getPhoto =((String)obj.get("photo")).getBytes();
+//        getPhoto = Base64.getDecoder().decode((String)obj.get("photo"));
+         String getTime = (String)obj.get("place");
+//        Log.d("这是返回的事件集合的", getTime);
+//        Log.d("这是返回时的图片字符串", (String)obj.get("photo"));
+        Log.d("这是tostring的图片字符串", obj.get("photo").toString());
+        Log.d("这是原生转换的图片字符串", (String)obj.get("photo"));
+
+
+//        Log.d("这是返回的事件集合的", getTime);
+         ShiJian temshijian = new ShiJian();
+         temshijian =setTempShiJian(getBiaoTi,getNeiRong,getPhoto,getTime);
+         temshijian.save();
+//        Log.d("这是存进去的时间，判断是否为空", temshijian.getTime());     不为空
+         shiJianList.getValue().add(temshijian);
     }
 
+            }
+//        }
+    }
+
+    //读取的事件暂时存在一个temshijian里。
+    private ShiJian setTempShiJian( String getBiaoTi , String getNeiRong,byte[] getPhoto,String getTime ){
+        ShiJian shijian = new ShiJian( );
+        shijian.setBiaoti(getBiaoTi);
+        shijian.setNeirong(getNeiRong);
+        shijian.setImgId(0);
+        shijian.setTime(getTime);
+        shijian.setPhoto(getPhoto);
+        Log.d("存在事件里的图片字符串", shijian.getPhotoString());;
+        return shijian;
+    }
 
     //删除事件
     public void deleteShiJian(String time){
