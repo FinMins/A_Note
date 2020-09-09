@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/delete_bill"
+        android:layout_width="60dp"
+        android:layout_height="26dp"
+        android:background="@drawable/button_shape"
+        android:text="删除"
+        android:textSize="16dp" />
+<!--    <Button&ndash;&gt;-->
+    <!--            android:id="@+id/cancelButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignBaseline="@+id/addButton"-->
+    <!--            android:layout_marginLeft="75dp"-->
+    <!--            android:layout_toEndOf="@+id/addButton"-->
+    <!--            android:background="@drawable/button_shape"-->
+    <!--            android:text="返回"-->
+    <!--            android:textSize="22sp" />-->
+</LinearLayout>

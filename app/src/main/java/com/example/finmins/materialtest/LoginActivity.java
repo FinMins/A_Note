@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         if(a !=null){
 //            setIsLogined(1);
             JSONObject jb = JSON.parseObject(a);
-            email = jb.getString("youxiang");
+               email = jb.getString("youxiang");
              touxiang = jb.getString("touxiang");
                  mingzi    = jb.getString("mingzi");
 //                       email    =     String  userPassword = jb.getString("password");

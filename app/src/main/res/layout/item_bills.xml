@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:background="@drawable/shape_corner">
+    <TextView
+        android:id="@+id/bill_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="2020-10-01"
+        android:textAlignment="center"
+        android:textSize="18dp"
+        />
+    <TextView
+        android:id="@+id/bill_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="学习支出"
+        android:textAlignment="center"
+        android:textSize="18dp"
+        />
+    <TextView
+        android:id="@+id/bill_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:text="1000.00"
+        android:textAlignment="center"
+        android:textSize="18dp"
+        />
+</LinearLayout>

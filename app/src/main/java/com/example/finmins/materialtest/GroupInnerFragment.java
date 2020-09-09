@@ -170,6 +170,7 @@ public class GroupInnerFragment extends Fragment {
                //是
                if( !vipEmail.equals(selfEmail)){
                    //      删除别人的操作：删除成员
+                   //删除gmk
                    deleteMemberAlter(groupName,selfEmail,position);
                }else {
                    //删除群
@@ -315,8 +316,9 @@ private void deleteMember(String groupname,String memberemail){
     //删除一个群的gmk
     private void deleteGroupGmk(String groupname ){
         String request = "  {\n" +
-                "    \"groupname\":\""+groupname+"\",\n" +
-                "}";
+                "    \"groupname\":\""+groupname+"\"\n" +
+                "} ";
+        Log.d("删除群的groupgmk：", request);
         String response = httpClientUtils.sendPostByOkHttp(URL+"/gmk/deleteG",request);
         if (response==null) Toast.makeText(getContext(), "gmk删除失败", Toast.LENGTH_SHORT).show();
 
